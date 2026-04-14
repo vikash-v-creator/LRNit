@@ -396,8 +396,7 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(80px);
-  will-change: transform;
+  filter: blur(50px);
   z-index: 0;
 }
 
@@ -436,29 +435,7 @@
     70%      { transform: translate(-40px, 20px) scale(0.92); }
   }
 
-  /* Extra orbs for more depth */
-  .ambient-orb.orb-4 {
-    width: 320px; height: 320px;
-    background: radial-gradient(circle, rgba(180,60,220,0.10), transparent 70%);
-    top: 60%; left: 10%;
-    animation: orbFloat4 20s ease-in-out infinite;
-  }
-  .ambient-orb.orb-5 {
-    width: 280px; height: 280px;
-    background: radial-gradient(circle, rgba(255,120,50,0.08), transparent 70%);
-    top: 15%; right: 15%;
-    animation: orbFloat5 24s ease-in-out infinite reverse;
-  }
-
-  @keyframes orbFloat4 {
-    0%,100% { transform: translate(0,0) scale(1); }
-    35%      { transform: translate(-50px, 60px) scale(1.12); }
-    65%      { transform: translate(30px, -30px) scale(0.9); }
-  }
-  @keyframes orbFloat5 {
-    0%,100% { transform: translate(0,0) scale(1); }
-    50%      { transform: translate(40px, 50px) scale(1.06); }
-  }
+  /* Extra orbs removed for performance — 3 orbs is sufficient */
 }
 
 /* ── Floating Geometric Shapes ──────────────────────────────────────── */
@@ -466,7 +443,6 @@
   position: absolute;
   pointer-events: none;
   z-index: 0;
-  will-change: transform;
 }
 
 /* Hexagon shape via clip-path */
@@ -746,8 +722,8 @@
 }
 
 .navbar.scrolled {
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
 }
 
 /* Sliding active indicator */
@@ -871,11 +847,8 @@
 .contact-card {
   position: relative;
   transition:
-    transform 0.5s var(--transition-spring),
-    box-shadow 0.5s ease;
-  will-change: transform;
-  perspective: 1200px;
-  transform-style: preserve-3d;
+    transform 0.4s var(--transition-spring),
+    box-shadow 0.4s ease;
   overflow: hidden;
 }
 
@@ -918,9 +891,8 @@
 .btn-secondary,
 .btn-tertiary,
 .btn-submit-animated {
-  will-change: transform;
-  transition: transform 0.45s var(--transition-spring),
-              box-shadow 0.4s ease !important;
+  transition: transform 0.35s var(--transition-spring),
+              box-shadow 0.3s ease !important;
   position: relative;
   overflow: hidden;
 }
@@ -1066,16 +1038,13 @@
 ═══════════════════════════════════════════════════════════════════════ */
 .hero-content {
   transform: translate(var(--mouse-tx, 0px), calc(var(--mouse-ty, 0px) + var(--scroll-ty, 0px)));
-  will-change: transform;
-  transition: transform 0.1s ease-out; /* Smooth snapping if variables change abruptly */
+  transition: transform 0.15s ease-out;
 }
 .hero-gears-container {
   transform: translateY(var(--scroll-ty, 0px));
-  will-change: transform;
 }
 #gears-wrapper {
   transform: translate(var(--mouse-tx, 0px), var(--mouse-ty, 0px)) translateZ(20px);
-  will-change: transform;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

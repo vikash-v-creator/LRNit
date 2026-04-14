@@ -216,30 +216,37 @@ function initNavbar() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
 
-    // Scroll-aware hide/show
+    // Scroll-aware hide/show (throttled via rAF)
     let lastScroll = 0;
+    let scrollTicking = false;
     window.addEventListener('scroll', () => {
-        const current = window.scrollY;
-        const diff = current - lastScroll;
+        if (!scrollTicking) {
+            scrollTicking = true;
+            requestAnimationFrame(() => {
+                const current = window.scrollY;
+                const diff = current - lastScroll;
 
-        if (current > 80) {
-            navbar.classList.add('scrolled');
-            if (diff > 4) {
-                navbar.classList.add('nav--hidden');
-                navbar.classList.remove('nav--visible');
-            } else if (diff < -4) {
-                navbar.classList.remove('nav--hidden');
-                navbar.classList.add('nav--visible');
-            }
-        } else {
-            navbar.classList.remove('scrolled', 'nav--hidden');
+                if (current > 80) {
+                    navbar.classList.add('scrolled');
+                    if (diff > 4) {
+                        navbar.classList.add('nav--hidden');
+                        navbar.classList.remove('nav--visible');
+                    } else if (diff < -4) {
+                        navbar.classList.remove('nav--hidden');
+                        navbar.classList.add('nav--visible');
+                    }
+                } else {
+                    navbar.classList.remove('scrolled', 'nav--hidden');
+                }
+                lastScroll = current;
+
+                // Update --scroll-y for CSS parallax blobs
+                document.documentElement.style.setProperty('--scroll-y', current + 'px');
+                state.scrollY = current;
+                state.scrollDirection = diff > 0 ? 'down' : 'up';
+                scrollTicking = false;
+            });
         }
-        lastScroll = current;
-
-        // Update --scroll-y for CSS parallax blobs
-        document.documentElement.style.setProperty('--scroll-y', current + 'px');
-        state.scrollY = current;
-        state.scrollDirection = diff > 0 ? 'down' : 'up';
     }, { passive: true });
 
     // Magnetic nav links
@@ -330,8 +337,8 @@ function initHeroCanvas() {
     ];
 
     let W, H, particles = [], heroContentRect = null, animRunning = true;
-    const MAX_PARTICLES = 80;
-    const CONNECTION_DIST = 130;
+    const MAX_PARTICLES = 50;
+    const CONNECTION_DIST = 100;
     const FPS_SAMPLES = [];
     let lastFrame = performance.now();
     let lowPerfMode = false;
@@ -353,7 +360,7 @@ function initHeroCanvas() {
 
     function initParticles() {
         particles = [];
-        const count = lowPerfMode ? 40 : MAX_PARTICLES;
+        const count = lowPerfMode ? 25 : MAX_PARTICLES;
         for (let i = 0; i < count; i++) {
             particles.push(createParticle());
         }
@@ -433,7 +440,7 @@ function initHeroCanvas() {
         state.fps = Math.round(avgFPS);
         if (!lowPerfMode && avgFPS < 40 && FPS_SAMPLES.length === 30) {
             lowPerfMode = true;
-            particles = particles.slice(0, 40);
+            particles = particles.slice(0, 25);
         }
 
         ctx.clearRect(0, 0, W, H);
@@ -550,6 +557,17 @@ function initHeroCanvas() {
 
     resize();
     requestAnimationFrame(draw);
+
+    // Pause canvas when tab is hidden to save CPU
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            animRunning = false;
+        } else {
+            animRunning = true;
+            lastFrame = performance.now();
+            requestAnimationFrame(draw);
+        }
+    });
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -649,14 +667,20 @@ function initScrollSystem() {
     const heroGears       = document.getElementById('gears-container');
     const heroGearsWrap   = document.getElementById('gears-wrapper');
 
+    let scrollTicking2 = false;
     window.addEventListener('scroll', () => {
-        const sy = window.scrollY;
-        // Hero parallax layers
-        if (heroContent && sy < window.innerHeight) {
-            heroContent.style.setProperty('--scroll-ty', `${sy * -0.08}px`);
-        }
-        if (heroGears && sy < window.innerHeight) {
-            heroGears.style.setProperty('--scroll-ty', `${sy * 0.12}px`);
+        if (!scrollTicking2) {
+            scrollTicking2 = true;
+            requestAnimationFrame(() => {
+                const sy = window.scrollY;
+                if (heroContent && sy < window.innerHeight) {
+                    heroContent.style.setProperty('--scroll-ty', `${sy * -0.08}px`);
+                }
+                if (heroGears && sy < window.innerHeight) {
+                    heroGears.style.setProperty('--scroll-ty', `${sy * 0.12}px`);
+                }
+                scrollTicking2 = false;
+            });
         }
     }, { passive: true });
 

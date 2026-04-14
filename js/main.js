@@ -42,9 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* --- Parallax CSS variable --- */
+    /* --- Parallax CSS variable (throttled via rAF) --- */
+    let parallaxTicking = false;
     window.addEventListener('scroll', () => {
-        document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
+        if (!parallaxTicking) {
+            parallaxTicking = true;
+            requestAnimationFrame(() => {
+                document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
+                parallaxTicking = false;
+            });
+        }
     }, { passive: true });
 
     /* --- Mechanical Gear Animation (Hero SVG) --- */
@@ -53,10 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const gearsWrapper  = document.getElementById('gears-wrapper');
     const gearsSvg      = document.querySelector('.gears-svg');
 
-    if (gears.length > 0 && gearsContainer) {
+    if (gears.length > 0 && gearsContainer && window.innerWidth > 768) {
         let speedMultiplier = 1;
         let targetSpeedMultiplier = 1;
         const PROXIMITY_RADIUS = 300;
+        let gearAnimRunning = true;
 
         document.addEventListener('mousemove', (e) => {
             const rect = gearsContainer.getBoundingClientRect();
@@ -75,8 +83,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, { passive: true });
 
+        // Pause gear animation when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            gearAnimRunning = !document.hidden;
+        });
+
         let lastTime = performance.now();
         function animateGears(time) {
+            if (!gearAnimRunning) {
+                requestAnimationFrame(animateGears);
+                lastTime = time;
+                return;
+            }
             const delta = time - lastTime;
             lastTime = time;
             speedMultiplier += (targetSpeedMultiplier - speedMultiplier) * 0.05;
