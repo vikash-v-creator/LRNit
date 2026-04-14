@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements | LRNit</title>
+    <meta name="description"
+        content="Stay updated with the latest announcements from LRNit Technical Club — recruitment drives, workshop alerts, and important updates.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- Motion System -->
+    <link rel="stylesheet" href="./css/motion.css">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+
+        /* Page Hero */
+        .announcements-page-hero {
+            text-align: center;
+            padding: 5rem 1.5rem 3rem;
+            position: relative;
+        }
+
+        .announcements-page-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .announcements-page-hero p {
+            color: var(--text-muted, #aaa);
+            max-width: 560px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Priority Filters */
+        .announcements-filters {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent-red, #b00404);
+            border-color: var(--accent-red, #b00404);
+            color: #fff;
+        }
+
+        /* Full Announcement Grid */
+        .announcements-full-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.75rem;
+            padding: 0 1.5rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Empty / Loading states */
+        .announcements-state {
+            text-align: center;
+            padding: 3rem;
+            color: #aaa;
+            grid-column: 1 / -1;
+        }
+
+        /* CTA Banner */
+        .announcements-cta {
+            text-align: center;
+            padding: 4rem 1.5rem;
+            background: linear-gradient(135deg, rgba(176, 4, 4, 0.12), rgba(122, 0, 0, 0.08));
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .announcements-cta h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .announcements-cta p {
+            color: #aaa;
+            margin-bottom: 1.75rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cursor (created by motion.js) -->
+
+        <!-- Global Animated Background -->
+    <div id="global-background" aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none;">
+        <!-- Neural Particle Canvas -->
+        <canvas id="hero-canvas" role="img" aria-label="Animated neural particle network background" style="pointer-events: auto;"></canvas>
+
+        <!-- Ambient Orbs -->
+        <div class="ambient-orb orb-1" aria-hidden="true"></div>
+        <div class="ambient-orb orb-2" aria-hidden="true"></div>
+        <div class="ambient-orb orb-3" aria-hidden="true"></div>
+
+        <!-- Aurora & Scanlines -->
+        <div class="hero-aurora" aria-hidden="true"></div>
+        <div class="hero-scanlines" aria-hidden="true"></div>
+    </div>
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
+    <div id="spotlight" aria-hidden="true"></div>
+    <div id="page-transition" aria-hidden="true"></div>
+    <div id="toast-live" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                LRN<span class="accent">it</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./events.html">Events</a></li>
+                <li><a href="./announcements.html" class="active">Announcements</a></li>
+                <li><a href="./gallery.html">Gallery</a></li>
+                <li><a href="./team.html">Team</a></li>
+                <li><a href="./join.html">Join Us</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger-btn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <div class="announcements-page-hero">
+        <h1>Club <span class="gradient-text">Announcements</span></h1>
+        <p>Stay updated with the latest news, recruitment drives, workshop alerts, and important announcements from LRNit.</p>
+    </div>
+
+    <!-- Priority Filters -->
+    <div class="announcements-filters" id="announcements-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="urgent">🔴 Urgent</button>
+        <button class="filter-btn" data-filter="important">🟠 Important</button>
+        <button class="filter-btn" data-filter="normal">⚪ Normal</button>
+    </div>
+
+    <!-- Announcements Grid -->
+    <div class="announcements-full-grid" id="announcements-full-grid">
+    </div>
+
+    <footer style="text-align:center; padding:2rem; border-top:1px solid rgba(255,255,255,0.07); color:#aaa;">
+        <p>&copy; 2026 LRNit Technical Club. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="./js/init.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script type="module" src="./js/load-announcements-full.js" defer></script>
+</body>
+
+</html>

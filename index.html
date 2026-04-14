@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRNit | Ignite Your Technical Potential</title>
+    <meta name="description"
+        content="LRNit is a university technical club fostering hands-on learning, collaborative projects, and innovation in engineering and technology.">
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- Motion System -->
+    <link rel="stylesheet" href="./css/motion.css">
+</head>
+
+<body>
+
+    <!-- Cursor (created by motion.js) -->
+
+    <!-- Global Animated Background -->
+    <div id="global-background" aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none;">
+        <!-- Neural Particle Canvas -->
+        <canvas id="hero-canvas" role="img" aria-label="Animated neural particle network background" style="pointer-events: auto;"></canvas>
+
+        <!-- Ambient Orbs -->
+        <div class="ambient-orb orb-1" aria-hidden="true"></div>
+        <div class="ambient-orb orb-2" aria-hidden="true"></div>
+        <div class="ambient-orb orb-3" aria-hidden="true"></div>
+        <div class="ambient-orb orb-4" aria-hidden="true"></div>
+        <div class="ambient-orb orb-5" aria-hidden="true"></div>
+
+        <!-- Floating Geometric Shapes -->
+        <div class="bg-geo bg-geo-hex geo-1" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-tri geo-2" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-ring geo-3" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-hex geo-4" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-tri geo-5" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-ring geo-6" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-dot geo-7" aria-hidden="true"></div>
+        <div class="bg-geo bg-geo-dot geo-8" aria-hidden="true"></div>
+
+        <!-- Meteor / Shooting Star Streaks -->
+        <div class="bg-meteor meteor-1" aria-hidden="true"></div>
+        <div class="bg-meteor meteor-2" aria-hidden="true"></div>
+        <div class="bg-meteor meteor-3" aria-hidden="true"></div>
+
+        <!-- Pulsing Grid Overlay -->
+        <div class="bg-pulse-grid" aria-hidden="true"></div>
+
+        <!-- Aurora & Scanlines -->
+        <div class="hero-aurora" aria-hidden="true"></div>
+        <div class="hero-aurora hero-aurora-2" aria-hidden="true"></div>
+        <div class="hero-scanlines" aria-hidden="true"></div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
+
+    <!-- Spotlight Vignette -->
+    <div id="spotlight" aria-hidden="true"></div>
+
+    <!-- Page Transition Overlay -->
+    <div id="page-transition" aria-hidden="true"></div>
+
+    <!-- Toast Live Region -->
+    <div id="toast-live" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                LRN<span class="accent">it</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./events.html">Events</a></li>
+                <li><a href="./announcements.html">Announcements</a></li>
+                <li><a href="./gallery.html">Gallery</a></li>
+                <li><a href="./team.html">Team</a></li>
+                <li><a href="./join.html">Join Us</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger-btn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+
+
+        <!-- Technical Grid Overlay -->
+        <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+        <div class="hero-inner-container">
+            <div class="hero-content">
+            <div class="badge">University Technical Club</div>
+            <h1 class="hero-title">
+                Learn. Build. <span class="gradient-text">Lead.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Join LRNit to <span class="hero-typewriter" aria-hidden="true"></span><span class="sr-only">innovate</span> modern technologies, collaborate on impactful projects, and push the boundaries of
+                what's possible.
+            </p>
+            <div class="hero-cta">
+                <a href="./join.html" class="btn-primary" id="btn-join">Join LRNit</a>
+            </div>
+        </div>
+
+        <!-- Mechanical Gear System -->
+        <div class="hero-gears-container" id="gears-container">
+            <div class="gears-parallax-wrapper" id="gears-wrapper">
+                <svg class="gears-svg" viewBox="0 0 420 420" width="100%" height="100%"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Flat Off-Black Gradient for Gears for Better Visibility -->
+                        <linearGradient id="flat-black" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#5a5a68" />
+                            <stop offset="100%" stop-color="#35353e" />
+                        </linearGradient>
+
+                        <!-- Tighter shadow for depth/visibility -->
+                        <filter id="gear-shadow" x="-30%" y="-30%" width="160%" height="160%">
+                            <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="rgba(0,0,0,0.95)" />
+                        </filter>
+                        
+                        <!-- Red glow filter for lightning -->
+                        <filter id="glow-red" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur1" />
+                            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur2" />
+                            <feMerge>
+                                <feMergeNode in="blur1" />
+                                <feMergeNode in="blur2" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+
+                        <!--
+                            GEAR LAYOUT (matching reference image):
+                            G1 (Large):   cx=145, cy=240, r=72   — left-center big gear
+                            G2 (Medium):  cx=244, cy=170, r=44   — top-center, meshes G1
+                            G3 (Large2):  cx=325, cy=195, r=56   — top-right, meshes G2
+                            G4 (Small):   cx=155, cy=355, r=32   — bottom-left, meshes G1
+                            G5 (Medium2): cx=280, cy=320, r=44   — bottom-right, meshes G3
+                        -->
+
+                        <!-- Mask G1: Large left gear (r=72), hub ring r=44/r=28, center hole r=14 -->
+                        <mask id="mask-gear1">
+                            <circle cx="145" cy="240" r="160" fill="white" />
+                            <circle cx="145" cy="240" r="46" fill="black" />
+                            <circle cx="145" cy="240" r="30" fill="white" />
+                            <circle cx="145" cy="240" r="14" fill="black" />
+                        </mask>
+                        <!-- Mask G2: Medium top gear (r=44and) hub ring r=28/r=18, center hole r=9 -->
+                        <mask id="mask-gear2">
+                            <circle cx="244" cy="170" r="100" fill="white" />
+                            <circle cx="244" cy="170" r="28" fill="black" />
+                            <circle cx="244" cy="170" r="18" fill="white" />
+                            <circle cx="244" cy="170" r="9" fill="black" />
+                        </mask>
+                        <!-- Mask G3: Large right gear (r=56), hub ring r=36/r=23, center hole r=12 -->
+                        <mask id="mask-gear3">
+                            <circle cx="325" cy="195" r="120" fill="white" />
+                            <circle cx="325" cy="195" r="36" fill="black" />
+                            <circle cx="325" cy="195" r="23" fill="white" />
+                            <circle cx="325" cy="195" r="12" fill="black" />
+                        </mask>
+                        <!-- Mask G4: Small bottom-left gear (r=32), hub ring r=20/r=12, center hole r=6 -->
+                        <mask id="mask-gear4">
+                            <circle cx="155" cy="355" r="80" fill="white" />
+                            <circle cx="155" cy="355" r="20" fill="black" />
+                            <circle cx="155" cy="355" r="12" fill="white" />
+                            <circle cx="155" cy="355" r="6" fill="black" />
+                        </mask>
+                        <!-- Mask G5: Medium bottom-right gear (r=44), hub ring r=28/r=18, center hole r=9 -->
+                        <mask id="mask-gear5">
+                            <circle cx="280" cy="320" r="100" fill="white" />
+                            <circle cx="280" cy="320" r="28" fill="black" />
+                            <circle cx="280" cy="320" r="18" fill="white" />
+                            <circle cx="280" cy="320" r="9" fill="black" />
+                        </mask>
+                    </defs>
+
+                    <!-- Neural Network Background Layer (Electric effect) -->
+                    <g id="neural-network" class="neural-network">
+                        <!-- Electric Lines radiating from gear centers -->
+                        <path class="nn-line" d="M 145 240 L 110 180 L 70 160 L 40 120" stroke="#e53030" stroke-width="1.5" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line delay-1" d="M 145 240 L 110 280 L 80 290 L 60 340" stroke="#e53030" stroke-width="1" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line delay-2" d="M 325 195 L 360 160 L 380 130 L 400 110" stroke="#e53030" stroke-width="1.5" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line delay-3" d="M 280 320 L 310 360 L 300 390 L 330 410" stroke="#e53030" stroke-width="1" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line delay-1" d="M 244 170 L 240 120 L 260 90 L 255 55" stroke="#e53030" stroke-width="1" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line delay-2" d="M 145 240 L 170 200 L 160 160 L 190 130 L 200 90" stroke="#e53030" stroke-width="1" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line" d="M 155 355 L 130 380 L 100 375 L 80 400" stroke="#e53030" stroke-width="1" fill="none" filter="url(#glow-red)" />
+                        <path class="nn-line delay-3" d="M 145 240 L 190 210 L 220 190 L 244 170" stroke="#e53030" stroke-width="0.5" fill="none" filter="url(#glow-red)" />
+
+                        <!-- Network Nodes -->
+                        <circle class="nn-node" cx="40" cy="120" r="4" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node delay-2" cx="60" cy="340" r="3" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node delay-1" cx="400" cy="110" r="5" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node delay-3" cx="330" cy="410" r="4" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node" cx="255" cy="55" r="3" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node delay-2" cx="200" cy="90" r="4" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node delay-1" cx="80" cy="400" r="3" fill="#c02020" filter="url(#glow-red)" />
+                        <circle class="nn-node delay-3" cx="190" cy="210" r="2.5" fill="#c02020" filter="url(#glow-red)" />
+                    </g>
+
+                    <!-- GEAR 1 (Large left — anchor gear) slides in from top-left -->
+                    <g class="gear-wrapper" style="--tx: -110px; --ty: -80px;">
+                        <g filter="url(#gear-shadow)">
+                            <g class="gear" data-ratio="1.000" data-direction="1" data-cx="145" data-cy="240" data-currentrotation="0" mask="url(#mask-gear1)">
+                                <circle cx="145" cy="240" r="72" fill="url(#flat-black)" />
+                                <circle cx="145" cy="240" r="72" fill="none" stroke="url(#flat-black)" stroke-width="14" stroke-dasharray="10.68 10.68" />
+                            </g>
+                        </g>
+                    </g>
+
+                    <!-- GEAR 2 (Medium top-center) slides in from above -->
+                    <g class="gear-wrapper delay-1" style="--tx: 50px; --ty: -110px;">
+                        <g filter="url(#gear-shadow)">
+                            <g class="gear" data-ratio="1.636" data-direction="-1" data-cx="244" data-cy="170" data-currentrotation="5" mask="url(#mask-gear2)">
+                                <circle cx="244" cy="170" r="44" fill="url(#flat-black)" />
+                                <circle cx="244" cy="170" r="44" fill="none" stroke="url(#flat-black)" stroke-width="14" stroke-dasharray="10.63 10.63" />
+                            </g>
+                        </g>
+                    </g>
+
+                    <!-- GEAR 3 (Large right) slides in from the right -->
+                    <g class="gear-wrapper delay-2" style="--tx: 120px; --ty: -60px;">
+                        <g filter="url(#gear-shadow)">
+                            <g class="gear" data-ratio="1.286" data-direction="1" data-cx="325" data-cy="195" data-currentrotation="10" mask="url(#mask-gear3)">
+                                <circle cx="325" cy="195" r="56" fill="url(#flat-black)" />
+                                <circle cx="325" cy="195" r="56" fill="none" stroke="url(#flat-black)" stroke-width="14" stroke-dasharray="10.68 10.68" />
+                            </g>
+                        </g>
+                    </g>
+
+                    <!-- GEAR 4 (Small bottom-left) slides in from the bottom -->
+                    <g class="gear-wrapper delay-3" style="--tx: -80px; --ty: 110px;">
+                        <g filter="url(#gear-shadow)">
+                            <g class="gear" data-ratio="2.250" data-direction="-1" data-cx="155" data-cy="355" data-currentrotation="0" mask="url(#mask-gear4)">
+                                <circle cx="155" cy="355" r="32" fill="url(#flat-black)" />
+                                <circle cx="155" cy="355" r="32" fill="none" stroke="url(#flat-black)" stroke-width="12" stroke-dasharray="10.47 10.47" />
+                            </g>
+                        </g>
+                    </g>
+
+                    <!-- GEAR 5 (Medium bottom-right) slides in from bottom-right -->
+                    <g class="gear-wrapper delay-4" style="--tx: 110px; --ty: 100px;">
+                        <g filter="url(#gear-shadow)">
+                            <g class="gear" data-ratio="1.636" data-direction="-1" data-cx="280" data-cy="320" data-currentrotation="18" mask="url(#mask-gear5)">
+                                <circle cx="280" cy="320" r="44" fill="url(#flat-black)" />
+                                <circle cx="280" cy="320" r="44" fill="none" stroke="url(#flat-black)" stroke-width="14" stroke-dasharray="10.63 10.63" />
+                            </g>
+                        </g>
+                    </g>
+
+                    <!-- Energy Sparks (contact points between gears) -->
+                    <g id="energy-sparks" class="energy-sparks">
+                        <!-- G1 ↔ G2 contact -->
+                        <path class="spark" d="M 196 202 Q 200 198 204 202" fill="none" stroke="#e53030" stroke-width="2" filter="url(#glow-red)" />
+                        <!-- G2 ↔ G3 contact -->
+                        <path class="spark delay-1" d="M 281 166 Q 284 163 287 160" fill="none" stroke="#e53030" stroke-width="1.5" filter="url(#glow-red)" />
+                        <!-- G1 ↔ G4 contact -->
+                        <path class="spark delay-2" d="M 145 312 Q 148 315 151 318" fill="none" stroke="#e53030" stroke-width="2" filter="url(#glow-red)" />
+                        <!-- G3/G5 contact -->
+                        <path class="spark delay-3" d="M 295 264 Q 298 267 301 270" fill="none" stroke="#e53030" stroke-width="1.5" filter="url(#glow-red)" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Philosophy Section -->
+    <section id="philosophy" class="philosophy">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Learn &bull; Build &bull; <span class="accent-text">Lead</span></h2>
+                <p style="color:#aaa; margin-top:0.5rem;">The three pillars that define everything we do at LRNit.</p>
+                <div class="title-underline" style="margin: 1rem auto 0;"></div>
+            </div>
+            <div id="pillars-grid" class="philo-3d-wrapper">
+                 <p style="text-align:center; color:#aaa; width:100%;">Loading pillars...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Who We Are</h2>
+                <div class="title-underline"></div>
+            </div>
+
+            <div class="philo-3d-wrapper" id="club-grid">
+                 <p style="text-align:center; color:#aaa; width:100%;">Loading info...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events & Projects Preview -->
+    <section id="events" class="events">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Upcoming <span class="accent-text">Hackathons</span> &amp; Events</h2>
+                <p>Don't miss out on our latest workshops, guest speakers, and coding competitions.</p>
+            </div>
+
+            <div id="home-flagship-container" style="max-width: 1300px; margin: 0 auto;"></div>
+
+            <div style="text-align: center; margin-top: 3.5rem;">
+                <a href="./events.html" class="btn-secondary" style="
+                    display: inline-block;
+                    padding: 0.8rem 2.5rem;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 12px;
+                    color: #fff;
+                    font-weight: 600;
+                    letter-spacing: 0.5px;
+                    text-decoration: none;
+                    transition: all 0.3s;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                    backdrop-filter: blur(10px);
+                " onmouseover="this.style.background='rgba(255, 255, 255, 0.1)';this.style.boxShadow='0 0 25px rgba(108,99,255,0.4)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.05)';this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.2)';">
+                    View All Events &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Announcements Section -->
+    <section id="announcements" class="announcements">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Club <span class="accent-text">Announcements</span></h2>
+                <div class="title-underline"></div>
+            </div>
+            <div class="announcement-grid">
+                <div class="announcement-card">
+                    <div class="announcement-tag recruitment">Recruitment</div>
+                    <h3>New Member Recruitment</h3>
+                    <p>Join the LRNit family! Applications for the upcoming semester are now open to all students.</p>
+                    <div class="announcement-date">Feb 15, 2026</div>
+                </div>
+                <div class="announcement-card">
+                    <div class="announcement-tag workshop">Workshop</div>
+                    <h3>Robotics Workshop</h3>
+                    <p>Get hands-on experience building and programming basic robotic systems. Limited seats available.</p>
+                    <div class="announcement-date">Feb 22, 2026</div>
+                </div>
+                <div class="announcement-card">
+                    <div class="announcement-tag results">Results</div>
+                    <h3>Hackathon Results</h3>
+                    <p>Congratulations to Team Alpha for winning the Winter Innovation Hackathon with their AI solution.</p>
+                    <div class="announcement-date">Mar 01, 2026</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="./announcements.html" class="btn-secondary">View More &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Activity <span class="accent-text">Gallery</span></h2>
+                <p>A glimpse into our events, workshops, and hackathons.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-img placeholder-1"></div>
+                    <div class="gallery-overlay">
+                        <h4>Coding Bootcamp</h4>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img placeholder-2"></div>
+                    <div class="gallery-overlay">
+                        <h4>Hardware Showcase</h4>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img placeholder-3"></div>
+                    <div class="gallery-overlay">
+                        <h4>Guest Lecture</h4>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img placeholder-4"></div>
+                    <div class="gallery-overlay">
+                        <h4>Team Brainstorming</h4>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img placeholder-5"></div>
+                    <div class="gallery-overlay">
+                        <h4>Winter Hackathon</h4>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-img placeholder-6"></div>
+                    <div class="gallery-overlay">
+                        <h4>Award Ceremony</h4>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="./gallery.html" class="btn-secondary">View More &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Meet Our <span class="accent-text">Team</span></h2>
+                <div class="title-underline" style="margin: 1rem auto 0;"></div>
+            </div>
+            <div class="team-grid" id="team-grid">
+                <p id="team-loading" style="text-align:center; color:#aaa; grid-column:1/-1;">Loading team...</p>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="./team.html" class="btn-secondary">View More &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Contact <span class="accent-text">Us</span></h2>
+                <p>Have questions or want to collaborate? Reach out to us!</p>
+            </div>
+            <div class="contact-grid">
+                <a href="mailto:hello@lrnit.club" class="contact-card">
+                    <div class="contact-icon">📧</div>
+                    <h3>Email</h3>
+                    <p>hello@lrnit.club</p>
+                </a>
+                <a href="#" class="contact-card">
+                    <div class="contact-icon">📸</div>
+                    <h3>Instagram</h3>
+                    <p>@lrnit.club</p>
+                </a>
+                <a href="#" class="contact-card">
+                    <div class="contact-icon">💼</div>
+                    <h3>LinkedIn</h3>
+                    <p>LRNit Tech Club</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>LRN<span class="accent">it</span></h2>
+                <p>Empowering the next generation of engineers and innovators.</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="./announcements.html">Announcements</a></li>
+                    <li><a href="./gallery.html">Gallery</a></li>
+                    <li><a href="./team.html">Team</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 LRNit Technical Club. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+
+    <!-- Boot Sequencer (loads state → init → motion lazily) -->
+    <script type="module" src="./js/init.js" defer></script>
+
+    <!-- Supabase Data Loaders (Modules) -->
+    <script type="module" src="./js/load-content.js" defer></script>
+    <script type="module" src="./js/load-events.js" defer></script>
+    <script type="module" src="./js/load-team.js" defer></script>
+    <script type="module" src="./js/load-gallery.js" defer></script>
+    <script type="module" src="./js/load-announcements.js" defer></script>
+    <script type="module" src="./js/load-homepage-cards.js" defer></script>
+
+    <!-- Legacy helpers (mobile menu fallback, smooth-scroll) -->
+    <script src="./js/main.js" defer></script>
+</body>
+
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | LRNit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-login-body">
+
+    <div class="login-container" id="login-card">
+        <div class="cursor-glow" id="cursor-glow"></div>
+        <div class="login-content">
+            <div class="login-header">
+                <a href="../index.html" class="logo anim-logo">
+                    <img src="../assets/logo.png" alt="LRNit Logo" class="logo-img">
+                    LRN<span class="accent">it</span>
+                </a>
+                <h2 class="anim-title">Admin Portal</h2>
+                <p class="anim-title">Sign in to manage the website.</p>
+            </div>
+
+            <form id="admin-login-form" class="login-form anim-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="admin@lrnit.com">
+                    <div id="email-error" class="field-error-msg"></div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                    <div id="password-error" class="field-error-msg"></div>
+                </div>
+
+                <div id="login-error" class="form-message error-message" style="display: none;"></div>
+
+                <button type="submit" id="login-submit-btn" class="btn-primary anim-btn">
+                    <div class="spinner" id="login-spinner"></div>
+                    <span id="login-btn-text">Sign In</span>
+                </button>
+            </form>
+            <div class="login-footer anim-form" style="animation-delay: 400ms;">
+                <a href="../index.html">← Back to Website</a>
+            <a href="reset.html" class="forgot-password" style="display:block;margin-top:1rem;">Forgot password?</a>
+</div>
+        </div>
+    </div>
+
+    <!-- Supabase Auth -->
+    <script type="module">
+        import { supabase } from "../js/supabase-client.js";
+
+        // If already logged in, redirect to dashboard
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            window.location.href = "dashboard.html";
+        }
+
+        const loginForm  = document.getElementById("admin-login-form");
+        const errorMsg   = document.getElementById("login-error");
+        const submitBtn  = document.getElementById("login-submit-btn");
+        const btnText    = document.getElementById("login-btn-text");
+        const spinner    = document.getElementById("login-spinner");
+        
+        const emailInput = document.getElementById("login-email");
+        const passInput  = document.getElementById("login-password");
+
+        // Cursor tracking
+        const card = document.getElementById('login-card');
+        const glow = document.getElementById('cursor-glow');
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            glow.style.left = `${x}px`;
+            glow.style.top = `${y}px`;
+        });
+
+        // Clear error states on input
+        emailInput.addEventListener('input', () => { emailInput.classList.remove('input-error'); });
+        passInput.addEventListener('input', () => { passInput.classList.remove('input-error'); });
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email    = emailInput.value.trim();
+            const password = passInput.value;
+
+            // Reset UI
+            errorMsg.style.display = "none";
+            emailInput.classList.remove('input-error');
+            passInput.classList.remove('input-error');
+            
+            // Set loading
+            submitBtn.disabled = true;
+            btnText.textContent = "Signing in...";
+            spinner.style.display = "block";
+
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                console.error("Login failed:", error);
+                
+                // Revert loading
+                submitBtn.disabled = false;
+                btnText.textContent = "Sign In";
+                spinner.style.display = "none";
+                
+                // Show errors
+                emailInput.classList.add('input-error');
+                passInput.classList.add('input-error');
+                errorMsg.textContent = "Invalid email or password.";
+                errorMsg.style.display = "block";
+            } else {
+                window.location.href = "dashboard.html";
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Us | LRNit</title>
+    <meta name="description" content="Apply for club membership at LRNit Technical Club.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- Motion System -->
+    <link rel="stylesheet" href="./css/motion.css">
+</head>
+
+<body>
+    <!-- Cursor (created by motion.js) -->
+
+        <!-- Global Animated Background -->
+    <div id="global-background" aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none;">
+        <!-- Neural Particle Canvas -->
+        <canvas id="hero-canvas" role="img" aria-label="Animated neural particle network background" style="pointer-events: auto;"></canvas>
+
+        <!-- Ambient Orbs -->
+        <div class="ambient-orb orb-1" aria-hidden="true"></div>
+        <div class="ambient-orb orb-2" aria-hidden="true"></div>
+        <div class="ambient-orb orb-3" aria-hidden="true"></div>
+
+        <!-- Aurora & Scanlines -->
+        <div class="hero-aurora" aria-hidden="true"></div>
+        <div class="hero-scanlines" aria-hidden="true"></div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
+    <!-- Spotlight Vignette -->
+    <div id="spotlight" aria-hidden="true"></div>
+    <!-- Page Transition Overlay -->
+    <div id="page-transition" aria-hidden="true"></div>
+    <!-- Toast Live Region -->
+    <div id="toast-live" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                LRN<span class="accent">it</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./events.html">Events</a></li>
+                <li><a href="./announcements.html">Announcements</a></li>
+                <li><a href="./gallery.html">Gallery</a></li>
+                <li><a href="./team.html">Team</a></li>
+                <li><a href="./join.html" class="active">Join Us</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger-btn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div style="padding-top: 120px; text-align: center; margin-bottom: 2rem;">
+        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 0.75rem;">Join <span class="gradient-text">LRNit</span></h1>
+        <p style="color: var(--text-muted, #aaa); max-width: 600px; margin: 0 auto; font-size: 1.1rem;">
+            Become a part of our technical community. Fill out the application form below to start your journey with us.
+        </p>
+    </div>
+
+    <div class="container" style="padding-bottom: 6rem;">
+        <div class="registration-card" style="max-width: 800px; margin: 0 auto;">
+            <form id="join-form" class="reg-form">
+                
+                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 1.5rem; color: #fff;">Personal Details</h3>
+                
+                <div class="form-row">
+                    <div class="floating-input">
+                        <input type="text" id="join-name" required placeholder=" ">
+                        <label for="join-name">Full Name</label>
+                    </div>
+                    <div class="floating-input">
+                        <input type="email" id="join-email" required placeholder=" ">
+                        <label for="join-email">Email Address</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="floating-input">
+                        <input type="tel" id="join-phone" required placeholder=" ">
+                        <label for="join-phone">Phone Number</label>
+                    </div>
+                    <div class="floating-input">
+                        <input type="text" id="join-department" required placeholder=" ">
+                        <label for="join-department">Department / Branch</label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="floating-input" style="flex: 1;">
+                        <select id="join-year" required>
+                            <option value="" disabled selected hidden></option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                            <option value="5+">Graduate / Other</option>
+                        </select>
+                        <label for="join-year">Year of Study</label>
+                    </div>
+                    <div class="floating-input" style="flex: 1;">
+                        <input type="url" id="join-portfolio" placeholder=" ">
+                        <label for="join-portfolio">GitHub / Portfolio Link (Optional)</label>
+                    </div>
+                </div>
+
+                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 2rem; margin-bottom: 1.5rem; color: #fff;">Technical Profile</h3>
+
+                <div class="floating-input">
+                    <input type="text" id="join-skills" required placeholder=" ">
+                    <label for="join-skills">Technical Skills (e.g., Python, React, UI/UX, Robotics)</label>
+                </div>
+
+                <div class="floating-input" style="margin-top: 1.5rem;">
+                    <textarea id="join-motivation" required placeholder=" " rows="4"></textarea>
+                    <label for="join-motivation">Why do you want to join LRNit?</label>
+                </div>
+
+                <div id="join-error" class="form-message"
+                    style="display:none; color: #ff3366; background: rgba(255, 51, 102, 0.08); border: 1px solid rgba(255, 51, 102, 0.2); margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                </div>
+
+                <button type="submit" id="join-submit-btn" class="btn-submit-animated" style="margin-top: 2rem;">Apply to Join LRNit</button>
+            </form>
+
+            <div id="join-success" class="success-card" style="display:none; padding: 4rem 2rem;">
+                <div class="success-icon-container">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path class="checkmark-animate" d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline class="checkmark-animate" points="22 4 12 14.01 9 11.01" style="animation-delay: 0.3s;"></polyline>
+                    </svg>
+                </div>
+                <h3 style="margin-bottom: 0.5rem;">Application Submitted Successfully!</h3>
+                <p>Thank you for applying to join LRNit. Our team will review your application and get back to you soon.</p>
+                <a href="./index.html" class="btn-secondary" style="margin-top: 1.5rem; display: inline-block;">Return to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align:center; padding:2rem; border-top:1px solid rgba(255,255,255,0.05); color:var(--text-secondary);">
+        <p>&copy; 2026 LRNit Technical Club. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="./js/init.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script type="module" src="./js/join.js" defer></script>
+    <script>
+        // Trigger confetti when join application succeeds
+        const joinSuccessEl = document.getElementById('join-success');
+        if (joinSuccessEl) {
+            const observer = new MutationObserver(() => {
+                if (joinSuccessEl.style.display !== 'none' && window.lrnit && window.lrnit.confetti) {
+                    window.lrnit.confetti();
+                }
+            });
+            observer.observe(joinSuccessEl, { attributes: true, attributeFilter: ['style'] });
+        }
+    </script>
+</body>
+
+</html>

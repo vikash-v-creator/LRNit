@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | LRNit</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body class="admin-dashboard">
+
+
+    <!-- Sidebar Menu -->
+    <aside class="sidebar">
+        <div class="sidebar-header" style="display: flex; align-items: center; gap: 10px;">
+            <img src="../assets/logo.png" alt="Logo" class="admin-logo-img" style="height: 32px; width: auto;">
+            <h2 style="margin: 0;">LRN<span class="accent">it</span> Admin</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active" data-tab="tab-dashboard"><i class='bx bxs-dashboard'></i> <span>Dashboard</span></li>
+            <li data-tab="tab-members"><i class='bx bxs-group'></i> <span>Members</span></li>
+            <li data-tab="tab-events"><i class='bx bxs-calendar-event'></i> <span>Events</span></li>
+            <li data-tab="tab-event-registrations"><i class='bx bxs-id-card'></i> <span>Event Registrations</span></li>
+            <li data-tab="tab-projects"><i class='bx bxs-bulb'></i> <span>Projects</span></li>
+            <li data-tab="tab-team"><i class='bx bxs-user-detail'></i> <span>Team</span></li>
+            <li data-tab="tab-gallery"><i class='bx bxs-photo-album'></i> <span>Gallery</span></li>
+            <li data-tab="tab-announcements"><i class='bx bxs-megaphone'></i> <span>Announcements</span></li>
+            <li data-tab="tab-content"><i class='bx bxs-layout'></i> <span>Content</span></li>
+            <li data-tab="tab-homepage-content"><i class='bx bx-abacus'></i> <span>Homepage Content</span></li>
+            <li data-tab="tab-applications"><i class='bx bxs-user-check'></i> <span>Membership Applications</span></li>
+            <li id="logout-btn" class="logout"><i class='bx bx-log-out'></i> <span>Logout</span></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header>
+            <h1 id="page-title">Dashboard Overview</h1>
+            <div class="user-info">
+                <span id="admin-email">Loading...</span>
+            </div>
+        </header>
+
+        <div class="content-tabs">
+
+            <!-- Dashboard Overview Tab -->
+            <section id="tab-dashboard" class="tab-pane active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class='bx bxs-group'></i>
+                        <div class="stat-details">
+                            <h3>Total Members</h3>
+                            <h2 id="stat-members">--</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bxs-calendar-event'></i>
+                        <div class="stat-details">
+                            <h3>Events</h3>
+                            <h2 id="stat-events">--</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bxs-bulb'></i>
+                        <div class="stat-details">
+                            <h3>Projects</h3>
+                            <h2 id="stat-projects">--</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class='bx bxs-user-detail'></i>
+                        <div class="stat-details">
+                            <h3>Team Members</h3>
+                            <h2 id="stat-team">--</h2>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Members Tab -->
+            <section id="tab-members" class="tab-pane">
+                <div class="section-header">
+                    <h2>Registrations</h2>
+                    <button class="btn-primary btn-sm" id="export-members-btn"><i class='bx bx-export'></i> Export
+                        CSV</button>
+                </div>
+                <div class="table-container">
+                    <table id="members-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Events Tab -->
+            <section id="tab-events" class="tab-pane">
+                <div class="section-header">
+                    <h2>Manage Events</h2>
+                    <button class="btn-primary btn-sm" id="add-event-btn"><i class='bx bx-plus'></i> Add Event</button>
+                </div>
+                <div class="table-container">
+                    <table id="events-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Event Registrations Tab -->
+            <section id="tab-event-registrations" class="tab-pane">
+                <div class="section-header">
+                    <h2>Event Registrations</h2>
+                    <button class="btn-primary btn-sm" id="export-registrations-btn"><i class='bx bx-export'></i> Export CSV</button>
+                </div>
+                
+                <div class="form-row" style="margin-bottom: 1.5rem; display: flex; gap: 1rem;">
+                    <select id="reg-event-select" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #fff;">
+                        <option value="">-- Select an Event --</option>
+                    </select>
+                    <input type="text" id="reg-search" placeholder="Search name, team, email..." style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #fff;">
+                </div>
+                <div style="margin-bottom: 1rem; color: #aaa; font-size: 0.9rem;">
+                    <span id="reg-stat-teams">0 Teams</span> &nbsp;|&nbsp; 
+                    <span id="reg-stat-participants">0 Total Participants</span>
+                </div>
+
+                <div class="table-container">
+                    <table id="event-registrations-table">
+                        <thead>
+                            <tr>
+                                <th>Team Name</th>
+                                <th>Size</th>
+                                <th>Leader</th>
+                                <th>Email</th>
+                                <th>College</th>
+                                <th>Student ID</th>
+                                <th>Dept</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="10" class="text-center">Select an event to load registrations.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Projects Tab -->
+            <section id="tab-projects" class="tab-pane">
+                <div class="section-header">
+                    <h2>Manage Projects</h2>
+                    <button class="btn-primary btn-sm" id="add-project-btn"><i class='bx bx-plus'></i> Add
+                        Project</button>
+                </div>
+                <div class="table-container">
+                    <table id="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Technologies</th>
+                                <th>Link</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Team Tab -->
+            <section id="tab-team" class="tab-pane">
+                <div class="section-header">
+                    <h2>Manage Team</h2>
+                    <button class="btn-primary btn-sm" id="add-team-btn"><i class='bx bx-plus'></i> Add Member</button>
+                </div>
+                <!-- ADD TEAM FILTER -->
+                <div class="form-row" style="margin-bottom: 1.5rem; display: flex; gap: 1rem;">
+                    <select id="team-filter" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: #fff; max-width: 300px;">
+                        <option value="all">All Members</option>
+                        <option value="core">Core Leadership (CEO/Managers)</option>
+                        <option value="event_planning">Event Planning</option>
+                        <option value="tech">Tech</option>
+                        <option value="sponsorship">Sponsorship</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="hr">HR</option>
+                        <option value="pr">PR</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table id="team-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Team/Dept</th>
+                                <th>Bio</th>
+                                <th>Order</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Gallery Tab -->
+            <section id="tab-gallery" class="tab-pane">
+                <div class="section-header">
+                    <h2>Manage Gallery</h2>
+                    <button class="btn-primary btn-sm" id="add-gallery-btn"><i class='bx bx-plus'></i> Add Image</button>
+                </div>
+                <div class="table-container">
+                    <table id="gallery-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Announcements Tab -->
+            <section id="tab-announcements" class="tab-pane">
+                <div class="section-header">
+                    <h2>Manage Announcements</h2>
+                    <button class="btn-primary btn-sm" id="add-announcement-btn"><i class='bx bx-plus'></i> Add Announcement</button>
+                </div>
+                <div class="table-container">
+                    <table id="announcements-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Priority</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Website Content Tab -->
+            <section id="tab-content" class="tab-pane">
+                <div class="section-header">
+                    <h2>Hero Section Content</h2>
+                </div>
+                <div class="form-container">
+                    <form id="content-form">
+                        <div class="form-group">
+                            <label>Badge Text</label>
+                            <input type="text" id="content-badge" placeholder="University Technical Club">
+                        </div>
+                        <div class="form-group">
+                            <label>Title Base</label>
+                            <input type="text" id="content-title" placeholder="Learn. Build.">
+                        </div>
+                        <div class="form-group">
+                            <label>Title Gradient</label>
+                            <input type="text" id="content-gradient" placeholder="Innovate.">
+                        </div>
+                        <div class="form-group">
+                            <label>Subtitle</label>
+                            <textarea id="content-subtitle" rows="3"
+                                placeholder="Join LRNit to master modern technologies..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>CTA Button Text</label>
+                            <input type="text" id="content-cta" placeholder="Join LRNit">
+                        </div>
+                        <button type="submit" class="btn-primary" id="save-content-btn">Save Changes</button>
+                        <span id="content-success-msg" class="success-text"
+                            style="display: none; margin-left: 1rem;">Saved!</span>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Homepage Content Tab (Pillars & Club Info) -->
+            <section id="tab-homepage-content" class="tab-pane">
+                <div class="section-header">
+                    <h2>Homepage Content Cards</h2>
+                    <button class="btn-primary btn-sm" id="add-homepage-btn"><i class='bx bx-plus'></i> Add Card</button>
+                </div>
+                
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Pillars Section</h3>
+                <div class="table-container" style="margin-bottom: 3rem;">
+                    <table id="pillars-table">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Order</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin-bottom: 1rem;">Club Info Section</h3>
+                <div class="table-container">
+                    <table id="club-info-table">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Order</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Membership Applications Tab -->
+            <section id="tab-applications" class="tab-pane">
+                <div class="section-header">
+                    <h2>Membership Applications</h2>
+                </div>
+                <div class="table-container">
+                    <table id="applications-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>Skills</th>
+                                <th>Portfolio</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="text-center">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Event Modal -->
+    <div class="modal" id="event-modal">
+        <div class="modal-content scrollable" style="max-width: 1000px; width: 90%;">
+            <div class="modal-header">
+                <h3 id="event-modal-title">Add Event</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            
+            <div class="modal-body">
+                <div class="event-builder-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                    <!-- Left: Form -->
+                <form id="event-form" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="hidden" id="event-id">
+                    
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="event-title" required>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                        <input type="checkbox" id="event-featured" style="width: auto; height: 18px; cursor: pointer;">
+                        <label for="event-featured" style="margin: 0; font-weight: 600; cursor: pointer; color: #fff;">⭐ Mark as Flagship Event</label>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Date &amp; Time</label>
+                            <input type="datetime-local" id="event-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="event-type">
+                                <option value="workshop">Workshop</option>
+                                <option value="hackathon">Hackathon</option>
+                                <option value="competition">Competition</option>
+                                <option value="talk">Tech Talk</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Participation Type</label>
+                        <select id="event-scope">
+                            <option value="inter">Inter College</option>
+                            <option value="intra">Intra College</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Min Team Size</label>
+                            <input type="number" id="event-min-team" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Max Team Size</label>
+                            <input type="number" id="event-max-team" value="1" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Registration Deadline</label>
+                            <input type="datetime-local" id="event-deadline">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="event-location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="event-desc" rows="3" required></textarea>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: end;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Cover Image (Required)</label>
+                            <input type="file" id="event-image-file" accept="image/png,image/jpeg,image/jpg,image/webp">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Overlay Color</label>
+                            <input type="color" id="event-color" value="#6c63ff" style="height: 42px; width: 100%; cursor: pointer; padding: 0.2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;">
+                        </div>
+                    </div>
+                    <div id="event-upload-status" class="upload-status"></div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Rulebook (PDF/Doc)</label>
+                            <input type="file" id="event-rulebook-file" accept=".pdf,.doc,.docx">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Attachment (Any file)</label>
+                            <input type="file" id="event-attachment-file">
+                        </div>
+                    </div>
+                    <div id="event-attachment-status" class="upload-status"></div>
+                    
+                    <button type="submit" class="btn-primary" style="margin-top: 1rem;">Save Event</button>
+                </form>
+
+                <!-- Right: Live Preview -->
+                <div class="event-preview-panel" style="background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.15);">
+                    <h4 style="margin-bottom: 1rem; color: #aaa; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Live Card Preview</h4>
+                    
+                    <div id="preview-card" style="
+                        position: relative;
+                        width: 100%;
+                        height: 260px;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        display: flex;
+                        align-items: center;
+                        background: #111;
+                        --overlay-color: #6c63ff;
+                    ">
+                        <!-- Image Layer -->
+                        <img id="preview-image" src="../assets/placeholder.webp" style="
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 60%;
+                            height: 100%;
+                            object-fit: cover;
+                            z-index: 1;
+                        ">
+                        
+                        <!-- Gradient Overlay Layer -->
+                        <div style="
+                            position: absolute;
+                            inset: 0;
+                            background: linear-gradient(90deg, transparent 0%, var(--overlay-color) 60%, var(--overlay-color) 100%);
+                            z-index: 2;
+                        "></div>
+                        
+                        <!-- Content Layer -->
+                        <div style="
+                            position: relative;
+                            z-index: 3;
+                            width: 100%;
+                            padding: 1.5rem;
+                            display: flex;
+                            justify-content: flex-end;
+                            text-align: left;
+                        ">
+                            <div style="width: 50%;">
+                                <div id="preview-type" style="display: inline-block; padding: 4px 10px; background: rgba(0,0,0,0.3); border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; border: 1px solid rgba(255,255,255,0.1);">OTHER</div>
+                                <h3 id="preview-title" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; line-height: 1.2; margin-bottom: 0.5rem;">Event Title</h3>
+                                <p id="preview-date" style="font-size: 0.8rem; color: rgba(255,255,255,0.8); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.3rem;">📅 TBD</p>
+                                <button style="background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 16px; color: #fff; font-weight: 500; font-size: 0.8rem; cursor: pointer;">Register Now →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal" id="project-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="project-modal-title">Add Project</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="project-form">
+                <input type="hidden" id="project-id">
+                <div class="form-group">
+                    <label>Project Title</label>
+                    <input type="text" id="project-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Technologies (Comma separated)</label>
+                    <input type="text" id="project-tech" required placeholder="React Native, Firebase">
+                </div>
+                <div class="form-group">
+                    <label>GitHub Link</label>
+                    <input type="url" id="project-link" placeholder="https://github.com/...">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="project-desc" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Save Project</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Team Member Modal -->
+    <div class="modal" id="team-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="team-modal-title">Add Team Member</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="team-form">
+                <input type="hidden" id="team-id">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="team-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Role / Position</label>
+                    <input type="text" id="team-role" required placeholder="e.g. President, Technical Lead">
+                </div>
+                <div class="form-group">
+                    <label>Department / Team</label>
+                    <select id="team-department">
+                        <option value="">None (Core Leadership)</option>
+                        <option value="event_planning">Event Planning</option>
+                        <option value="tech">Tech</option>
+                        <option value="sponsorship">Sponsorship</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="hr">HR</option>
+                        <option value="pr">PR</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display: flex; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <label>Role Level</label>
+                        <select id="team-role-level">
+                            <option value="member">Member</option>
+                            <option value="manager">Manager / Co-Head</option>
+                            <option value="ceo">Top Leader (CEO)</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; display: flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem;">
+                        <input type="checkbox" id="team-is-head" style="width: auto; height: 18px; cursor: pointer;">
+                        <label for="team-is-head" style="margin: 0; cursor: pointer; color: #fff;">Is Dept Head?</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Short Bio</label>
+                    <textarea id="team-bio" rows="3" placeholder="Optional short description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Profile Image (Required)</label>
+                    <input type="file" id="team-image-file" accept="image/png,image/jpeg,image/jpg,image/webp">
+                    <div id="team-upload-status" class="upload-status"></div>
+                </div>
+                <div class="form-group">
+                    <label>LinkedIn URL</label>
+                    <input type="url" id="team-linkedin" placeholder="https://linkedin.com/in/...">
+                </div>
+                <div class="form-group">
+                    <label>Display Order (number)</label>
+                    <input type="number" id="team-order" value="0" min="0">
+                </div>
+                <button type="submit" class="btn-primary">Save Member</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="modal" id="gallery-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="gallery-modal-title">Add Gallery Image</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="gallery-form">
+                <input type="hidden" id="gallery-id">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="gallery-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="gallery-desc" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Image File (Required)</label>
+                    <input type="file" id="gallery-image-file" accept="image/png,image/jpeg,image/jpg,image/webp">
+                    <div id="gallery-upload-status" class="upload-status"></div>
+                </div>
+                <button type="submit" class="btn-primary">Save Image</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div class="modal" id="announcement-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="announcement-modal-title">Add Announcement</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="announcement-form">
+                <input type="hidden" id="announcement-id">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="announcement-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="announcement-desc" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="announcementPriority">
+                        <option value="urgent">🔴 Urgent</option>
+                        <option value="important">🟠 Important</option>
+                        <option value="normal" selected>🔵 Normal</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Save Announcement</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Homepage Card Modal -->
+    <div class="modal" id="homepage-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="homepage-modal-title">Add Homepage Card</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="homepage-form">
+                <input type="hidden" id="homepage-id">
+                <div class="form-group">
+                    <label>Section</label>
+                    <select id="homepage-section">
+                        <option value="pillars">Pillars (Learn, Build, Lead)</option>
+                        <option value="club">Club Info (Mission, Vision, Community)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="homepage-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="homepage-desc" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Icon (Lucide name)</label>
+                    <input type="text" id="homepage-icon" required placeholder="e.g. brain, rocket, book">
+                    <small>Find icons at <a href="https://lucide.dev/icons" target="_blank">lucide.dev</a></small>
+                </div>
+                <div class="form-group">
+                    <label>Display Order (number)</label>
+                    <input type="number" id="homepage-order" value="0" min="0">
+                </div>
+                <button type="submit" class="btn-primary">Save Card</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Members Modal -->
+    <div class="modal" id="view-members-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="view-members-title">Team Members</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div id="view-members-content" style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- browser-image-compression must load as a plain blocking script BEFORE the admin.js module -->
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@1.0.15/dist/browser-image-compression.js" defer></script>
+    <script type="module" src="admin.js" defer></script>
+
+</body>
+
+</html>

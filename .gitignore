@@ -1,0 +1,16 @@
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp
+*.tmp
+tmp_*
+.tmp-*/
+
+# Node (if any scratch scripts)
+node_modules/

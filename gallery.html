@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | LRNit</title>
+    <meta name="description"
+        content="Browse photos from LRNit events, workshops, hackathons, and community activities.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- Motion System -->
+    <link rel="stylesheet" href="./css/motion.css">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+
+        /* Page Hero */
+        .gallery-page-hero {
+            text-align: center;
+            padding: 5rem 1.5rem 3rem;
+            position: relative;
+        }
+
+        .gallery-page-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .gallery-page-hero p {
+            color: var(--text-muted, #aaa);
+            max-width: 560px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Masonry Grid */
+        .gallery-masonry {
+            column-count: 3;
+            column-gap: 1.25rem;
+            padding: 0 1.5rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .gallery-masonry { column-count: 2; }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-masonry { column-count: 1; }
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.25rem;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .masonry-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px rgba(176,4,4,0.15);
+            border-color: rgba(176,4,4,0.4);
+        }
+
+        .masonry-item img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .masonry-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .masonry-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(2,4,10,0.85) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.25rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .masonry-item:hover .masonry-overlay {
+            opacity: 1;
+        }
+
+        .masonry-overlay h4 {
+            color: white;
+            font-size: 1.1rem;
+            transform: translateY(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .masonry-item:hover .masonry-overlay h4 {
+            transform: translateY(0);
+        }
+
+        .masonry-overlay p {
+            color: #ccc;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* ── Split-screen Detail Panel (Modal Card) ── */
+        .img-detail-panel {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(4, 5, 10, 0.85);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .img-detail-panel.active {
+            display: flex;
+        }
+
+        .panel-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            height: clamp(500px, 80vh, 800px);
+            background: #02040a; /* Dark sleek background */
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
+            position: relative;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .img-detail-panel.active .panel-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Left: full bleed image */
+        .panel-image-side {
+            flex: 1 1 55%;
+            position: relative;
+            overflow: hidden;
+        }
+        .panel-image-side img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 8s ease;
+        }
+        .img-detail-panel.active .panel-image-side img {
+            transform: scale(1.05);
+        }
+        /* Fade into the dark background on the right */
+        .panel-image-side::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, transparent 50%, #02040a 100%);
+            pointer-events: none;
+        }
+
+        /* Right: info side */
+        .panel-info-side {
+            flex: 0 0 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 4rem 3rem 1rem; /* Less left padding since image fades in */
+            position: relative;
+            z-index: 1;
+            overflow-y: auto;
+        }
+
+        /* Accent line */
+        .panel-accent-bar {
+            width: 48px;
+            height: 3px;
+            background: var(--accent-red, #b00404);
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 10px rgba(176,4,4,0.6);
+        }
+
+        .panel-tag {
+            font-size: 0.75rem;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #b00404;
+            margin-bottom: 0.75rem;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.45s ease 0.1s, transform 0.45s ease 0.1s;
+        }
+        .panel-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+        }
+        .panel-divider {
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+            margin-bottom: 1.25rem;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.3s;
+        }
+        .panel-description {
+            font-size: 1.05rem;
+            color: #bbb;
+            line-height: 1.7;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s;
+        }
+        .panel-no-desc {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.2);
+            font-style: italic;
+        }
+
+        /* Animate in when active */
+        .img-detail-panel.active .panel-tag,
+        .img-detail-panel.active .panel-title,
+        .img-detail-panel.active .panel-divider,
+        .img-detail-panel.active .panel-description {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Close button (floating above right top corner) */
+        .panel-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+            z-index: 10;
+        }
+        .panel-close:hover {
+            background: #b00404;
+            border-color: #b00404;
+            transform: rotate(90deg) scale(1.05);
+        }
+
+        /* Mobile: stack vertically */
+        @media (max-width: 768px) {
+            .panel-container {
+                flex-direction: column;
+                height: 90vh;
+                border-radius: 16px;
+            }
+            .panel-image-side {
+                flex: 0 0 40vh;
+                width: 100%;
+            }
+            .panel-image-side::after {
+                background: linear-gradient(to bottom, transparent 50%, #02040a 100%);
+            }
+            .panel-info-side {
+                flex: 1;
+                padding: 1rem 2rem 2rem;
+            }
+        }
+
+        /* Loading state */
+        .gallery-state {
+            text-align: center;
+            padding: 3rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cursor (created by motion.js) -->
+
+        <!-- Global Animated Background -->
+    <div id="global-background" aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none;">
+        <!-- Neural Particle Canvas -->
+        <canvas id="hero-canvas" role="img" aria-label="Animated neural particle network background" style="pointer-events: auto;"></canvas>
+
+        <!-- Ambient Orbs -->
+        <div class="ambient-orb orb-1" aria-hidden="true"></div>
+        <div class="ambient-orb orb-2" aria-hidden="true"></div>
+        <div class="ambient-orb orb-3" aria-hidden="true"></div>
+
+        <!-- Aurora & Scanlines -->
+        <div class="hero-aurora" aria-hidden="true"></div>
+        <div class="hero-scanlines" aria-hidden="true"></div>
+    </div>
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
+    <div id="spotlight" aria-hidden="true"></div>
+    <div id="page-transition" aria-hidden="true"></div>
+    <div id="toast-live" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                LRN<span class="accent">it</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./events.html">Events</a></li>
+                <li><a href="./announcements.html">Announcements</a></li>
+                <li><a href="./gallery.html" class="active">Gallery</a></li>
+                <li><a href="./team.html">Team</a></li>
+                <li><a href="./join.html">Join Us</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger-btn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <div class="gallery-page-hero">
+        <h1>Activity <span class="gradient-text">Gallery</span></h1>
+        <p>A visual journey through our events, workshops, hackathons, and community moments.</p>
+    </div>
+
+    <!-- Masonry Gallery -->
+    <div class="gallery-masonry" id="gallery-masonry">
+    </div>
+
+    <!-- Split-Screen Image Detail Panel Modal -->
+    <div class="img-detail-panel" id="img-detail-panel">
+        <div class="panel-container">
+            <!-- Left: Image -->
+            <div class="panel-image-side" id="panel-image-side">
+                <img id="panel-img" src="" alt="Gallery Image">
+            </div>
+
+            <!-- Right: Info -->
+            <div class="panel-info-side">
+                <div class="panel-accent-bar"></div>
+                <div class="panel-tag" id="panel-tag">Gallery</div>
+                <h2 class="panel-title" id="panel-title">Image Title</h2>
+                <div class="panel-divider"></div>
+                <p class="panel-description" id="panel-description"></p>
+            </div>
+
+            <!-- Close overlay button -->
+            <button class="panel-close" id="panel-close" aria-label="Close">&#x2715;</button>
+        </div>
+    </div>
+
+    <footer style="text-align:center; padding:2rem; border-top:1px solid rgba(255,255,255,0.07); color:#aaa;">
+        <p>&copy; 2026 LRNit Technical Club. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="./js/init.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script type="module" src="./js/load-gallery-full.js" defer></script>
+</body>
+
+</html>

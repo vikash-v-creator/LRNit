@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration | LRNit</title>
+    <meta name="description" content="Register for upcoming events at LRNit Technical Club.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- Motion System -->
+    <link rel="stylesheet" href="./css/motion.css">
+    <style>
+        .event-banner {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-banner-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.25), rgba(0, 204, 170, 0.15));
+        }
+
+        .event-banner-content {
+            padding: 1.5rem;
+            text-align: left;
+        }
+
+        .event-banner-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(108, 99, 255, 0.2);
+            color: #6c63ff;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .event-banner h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
+
+        .event-banner-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--text-muted, #aaa);
+            font-size: 0.95rem;
+            flex-wrap: wrap;
+        }
+        
+        .participant-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.4s ease forwards;
+        }
+        
+        .participant-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent, #6c63ff);
+            opacity: 0.7;
+        }
+
+        .participant-card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-top: 0.2rem;
+            cursor: pointer;
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        #loading-state, #error-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        #error-state {
+            display: none;
+            color: #ff3366;
+            background: rgba(255, 51, 102, 0.08);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            border-radius: 12px;
+        }
+        
+        #registration-content {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cursor (created by motion.js) -->
+
+    <!-- Global Animated Background -->
+    <div id="global-background" aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none;">
+        <canvas id="hero-canvas" role="img" aria-label="Animated neural particle network background" style="pointer-events: auto;"></canvas>
+        <div class="ambient-orb orb-1" aria-hidden="true"></div>
+        <div class="ambient-orb orb-2" aria-hidden="true"></div>
+        <div class="ambient-orb orb-3" aria-hidden="true"></div>
+        <div class="hero-aurora" aria-hidden="true"></div>
+        <div class="hero-scanlines" aria-hidden="true"></div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
+    <!-- Spotlight Vignette -->
+    <div id="spotlight" aria-hidden="true"></div>
+    <!-- Page Transition Overlay -->
+    <div id="page-transition" aria-hidden="true"></div>
+    <!-- Toast Live Region -->
+    <div id="toast-live" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="./index.html" class="logo">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                LRN<span class="accent">it</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./events.html">Events</a></li>
+                <li><a href="./announcements.html">Announcements</a></li>
+                <li><a href="./gallery.html">Gallery</a></li>
+                <li><a href="./team.html">Team</a></li>
+                <li><a href="./join.html">Join Us</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger-btn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div style="padding-top: 120px; text-align: center; margin-bottom: 1.5rem;">
+        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 0.75rem;">Event <span class="gradient-text">Registration</span></h1>
+    </div>
+
+    <!-- Empty marker replaced loading state -->
+
+    <!-- Error State -->
+    <div id="error-state">
+        <h2 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem;" id="error-title">Event Unavailable</h2>
+        <p id="error-desc">This event is no longer available or the registration link is invalid.</p>
+        <a href="./events.html" class="btn-primary" style="margin-top: 1.5rem; display: inline-block;">Browse Events</a>
+    </div>
+
+    <div class="container" id="registration-content" style="padding-bottom: 6rem;">
+        
+        <!-- Event Banner -->
+        <div class="event-banner" id="event-banner">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="registration-card cl-reveal" style="max-width: 800px; margin: 0 auto;">
+            <form id="registration-form" class="reg-form">
+                
+                <!-- Team Setup -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 1rem; color: #fff;">Team Details</h3>
+                    <div class="form-row">
+                        <div class="floating-input">
+                            <input type="text" id="reg-team-name" placeholder=" ">
+                            <label for="reg-team-name">Team Name (Optional)</label>
+                        </div>
+                        <div class="floating-input">
+                            <select id="reg-team-size" required></select>
+                            <label for="reg-team-size">Team Size</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leader Setup -->
+                <div class="participant-card">
+                    <div class="participant-card-title">TEAM LEADER</div>
+                    <div class="form-row">
+                        <div class="floating-input">
+                            <input type="text" id="leader-name" required placeholder=" ">
+                            <label for="leader-name">Full Name</label>
+                        </div>
+                        <div class="floating-input">
+                            <input type="email" id="leader-email" required placeholder=" ">
+                            <label for="leader-email">Email Address</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="floating-input">
+                            <input type="tel" id="leader-phone" required placeholder=" ">
+                            <label for="leader-phone">Phone Number</label>
+                        </div>
+                        <div class="floating-input scope-field scope-intra" style="display:none;">
+                            <input type="text" id="leader-student-id" placeholder=" ">
+                            <label for="leader-student-id">Student ID</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="floating-input scope-field scope-inter">
+                            <input type="text" id="leader-college" placeholder=" ">
+                            <label for="leader-college">College Name</label>
+                        </div>
+                        <div class="floating-input">
+                            <input type="text" id="leader-department" placeholder=" ">
+                            <label for="leader-department">Department</label>
+                        </div>
+                    </div>
+                    <div class="floating-input">
+                        <select id="leader-year" required>
+                            <option value="" disabled selected hidden></option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                            <option value="5+">Graduate / Other</option>
+                        </select>
+                        <label for="leader-year">Year of Study</label>
+                    </div>
+                </div>
+
+                <!-- Dynamic Members Container -->
+                <div id="dynamic-members-container"></div>
+                
+                <!-- Additional Notes -->
+                <div class="floating-input" style="margin-top: 2rem;">
+                    <textarea id="reg-notes" placeholder=" "></textarea>
+                    <label for="reg-notes">Additional Notes (Optional)</label>
+                </div>
+
+                <label class="checkbox-container">
+                    <input type="checkbox" id="reg-rules" required>
+                    <span>I agree to the event rules and guidelines.</span>
+                </label>
+
+                <div id="reg-error" class="form-message"
+                    style="display:none; color: #ff3366; background: rgba(255, 51, 102, 0.08); border: 1px solid rgba(255, 51, 102, 0.2); margin-bottom: 1.5rem;">
+                </div>
+
+                <button type="submit" id="reg-submit-btn" class="btn-submit-animated">Register for Event</button>
+            </form>
+
+            <div id="reg-success" class="success-card" style="display:none; padding: 4rem 2rem;">
+                <div class="success-icon-container">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path class="checkmark-animate" d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline class="checkmark-animate" points="22 4 12 14.01 9 11.01" style="animation-delay: 0.3s;"></polyline>
+                    </svg>
+                </div>
+                <h3 style="margin-bottom: 0.5rem;">Registration Successful</h3>
+                <p>Thank you for registering for the event. We will contact you with further details.</p>
+                <a href="./events.html" class="btn-secondary" style="margin-top: 1.5rem; display: inline-block;">Back to Events</a>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align:center; padding:2rem; border-top:1px solid rgba(255,255,255,0.05); color:var(--text-secondary);">
+        <p>&copy; 2026 LRNit Technical Club. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="./js/init.js" defer></script>
+    <script src="./js/main.js" defer></script>
+    <script type="module" src="./js/register.js" defer></script>
+    <script>
+        // Trigger confetti when registration succeeds
+        const regSuccessEl = document.getElementById('reg-success');
+        if (regSuccessEl) {
+            const observer = new MutationObserver(() => {
+                if (regSuccessEl.style.display !== 'none' && window.lrnit && window.lrnit.confetti) {
+                    window.lrnit.confetti();
+                }
+            });
+            observer.observe(regSuccessEl, { attributes: true, attributeFilter: ['style'] });
+        }
+    </script>
+</body>
+
+</html>
