@@ -1328,12 +1328,12 @@ footer {
 /* ===================== */
 .registration-card {
     background: rgba(5, 14, 60, 0.45);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(59, 130, 246, 0.15);
     border-radius: var(--radius-lg);
-    padding: 3.5rem 2.5rem;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    padding: 2.5rem 2rem;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
     position: relative;
     overflow: hidden;
     max-width: 640px;
@@ -1574,7 +1574,7 @@ footer {
     transform: translate(-50%, -50%);
     transition: transform 0.08s ease-out, box-shadow 0.25s ease, opacity 0.3s ease;
     opacity: 0;
-    will-change: left, top, transform, opacity;
+    will-change: transform, opacity;
 }
 
 /* Expanded state when hovering interactive elements */
@@ -3082,6 +3082,9 @@ section {
 
     /* Simplify gradient shifts */
     .gradient-text { animation: fadeInUp 0.8s ease-out 0.2s both; }
+
+    /* Fixed background-attachment causes page repaint on scroll in mobile */
+    body { background-attachment: scroll; }
 }
 
 /* ─── Mobile (≤ 480px) ─────────────────────────────────────── */

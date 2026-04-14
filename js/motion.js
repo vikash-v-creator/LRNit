@@ -1,34 +1,84 @@
-// motion.js — LRNit Cinematic Motion System
+// motion.js — LRNit Cinematic Motion System (Performance-Optimized)
 // Loaded lazily after lrnit:ready fires from init.js
+// All visual features are gated by state.performanceMode (high | medium | low)
 import { state } from './state.js';
+
+// ─── Helper: performance tier check ──────────────────────────────────────────
+const perf = () => state.performanceMode;
+const isHigh   = () => perf() === 'high';
+const isMedium = () => perf() === 'medium';
+const isLow    = () => perf() === 'low';
+const isNotLow = () => perf() !== 'low';
+
+// ─── Helper: debounce ────────────────────────────────────────────────────────
+function debounce(fn, ms) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), ms);
+    };
+}
+
+// ─── Helper: throttle via rAF ────────────────────────────────────────────────
+function rafThrottle(fn) {
+    let ticking = false;
+    return function (...args) {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            fn.apply(this, args);
+            ticking = false;
+        });
+    };
+}
 
 // ─────────────────────────────────────────────────────────────────────
 // PUBLIC ENTRY POINT — called by init.js after loader exits
 // ─────────────────────────────────────────────────────────────────────
 export function initMotion() {
-    if (state.prefersReducedMotion) {
-        // Still run non-visual helpers
-        initFloatingLabels();
-        initToastSystem();
-        initScrollProgress();
+    // Always run essential non-visual helpers
+    initFloatingLabels();
+    initToastSystem();
+    initScrollProgress();
+
+    if (state.prefersReducedMotion && perf() === 'low') {
+        // Reduced motion + low perf: skip all visual effects
+        initNavbar();    // still need hamburger menu
+        initHeroEntrance(); // runs once, lightweight
         return;
     }
-    initScrollProgress();
-    initCursor();
-    initSpotlight();
-    initPageTransition();
-    initToastSystem();
+
     initNavbar();
-    initHeroCanvas();
     initHeroEntrance();
     initTypewriter();
-    initScrollSystem();
     initScrollReveals();
-    initCardTilt();
     initMagneticButtons();
-    initTextScramble();
-    initFloatingLabels();
     initConfetti();
+
+    // ── Gated by performance tier ──
+    if (isNotLow()) {
+        initPageTransition();
+        initScrollSystem();
+        initCardTilt();
+    }
+
+    if (isHigh()) {
+        initCursor();
+        initHeroCanvas();
+        initTextScramble();
+    }
+
+    if (isMedium()) {
+        // Medium: cursor dot only (no trails — handled by CSS hiding)
+        initCursor();
+        initHeroCanvas(); // will use reduced particle count
+    }
+
+    // Spotlight only on high
+    if (isHigh() && !state.isMobile) {
+        initSpotlight();
+    }
+
     initPerformanceGuards();
 }
 
@@ -38,11 +88,16 @@ export function initMotion() {
 function initScrollProgress() {
     const bar = document.getElementById('scroll-progress-bar');
     if (!bar) return;
-    window.addEventListener('scroll', () => {
-        const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+
+    const onScroll = rafThrottle(() => {
+        const docHeight = document.body.scrollHeight - window.innerHeight;
+        if (docHeight <= 0) return;
+        const pct = window.scrollY / docHeight;
         document.documentElement.style.setProperty('--scroll-progress', Math.min(1, pct));
         state.scrollY = window.scrollY;
-    }, { passive: true });
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -57,14 +112,17 @@ function initCursor() {
     dot.setAttribute('aria-hidden', 'true');
     document.body.appendChild(dot);
 
-    // Create 3 ghost trails
-    const trails = [1, 2, 3].map(() => {
-        const t = document.createElement('div');
-        t.className = 'cursor-trail';
-        t.setAttribute('aria-hidden', 'true');
-        document.body.appendChild(t);
-        return t;
-    });
+    // Create trails only on HIGH (CSS hides them on MEDIUM, but skip DOM creation too)
+    const trails = [];
+    if (isHigh()) {
+        [1, 2, 3].forEach(() => {
+            const t = document.createElement('div');
+            t.className = 'cursor-trail';
+            t.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(t);
+            trails.push(t);
+        });
+    }
 
     let mx = -100, my = -100;
     let cx = -100, cy = -100;
@@ -103,13 +161,15 @@ function initCursor() {
         dot.style.left = cx + 'px';
         dot.style.top  = cy + 'px';
 
-        trails.forEach((t, i) => {
-            const prev = i === 0 ? { x: cx, y: cy } : trailPos[i - 1];
-            trailPos[i].x += (prev.x - trailPos[i].x) * trailLerp[i];
-            trailPos[i].y += (prev.y - trailPos[i].y) * trailLerp[i];
-            t.style.left = trailPos[i].x + 'px';
-            t.style.top  = trailPos[i].y + 'px';
-        });
+        if (trails.length > 0) {
+            trails.forEach((t, i) => {
+                const prev = i === 0 ? { x: cx, y: cy } : trailPos[i - 1];
+                trailPos[i].x += (prev.x - trailPos[i].x) * trailLerp[i];
+                trailPos[i].y += (prev.y - trailPos[i].y) * trailLerp[i];
+                t.style.left = trailPos[i].x + 'px';
+                t.style.top  = trailPos[i].y + 'px';
+            });
+        }
         requestAnimationFrame(rafCursor);
     }
     rafCursor();
@@ -122,10 +182,13 @@ function initSpotlight() {
     if (state.isMobile) return;
     const el = document.getElementById('spotlight');
     if (!el) return;
-    document.addEventListener('mousemove', e => {
+
+    const onMove = rafThrottle(e => {
         el.style.setProperty('--cx', e.clientX + 'px');
         el.style.setProperty('--cy', e.clientY + 'px');
-    }, { passive: true });
+    });
+
+    document.addEventListener('mousemove', onMove, { passive: true });
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -218,39 +281,34 @@ function initNavbar() {
 
     // Scroll-aware hide/show (throttled via rAF)
     let lastScroll = 0;
-    let scrollTicking = false;
-    window.addEventListener('scroll', () => {
-        if (!scrollTicking) {
-            scrollTicking = true;
-            requestAnimationFrame(() => {
-                const current = window.scrollY;
-                const diff = current - lastScroll;
+    const onScroll = rafThrottle(() => {
+        const current = window.scrollY;
+        const diff = current - lastScroll;
 
-                if (current > 80) {
-                    navbar.classList.add('scrolled');
-                    if (diff > 4) {
-                        navbar.classList.add('nav--hidden');
-                        navbar.classList.remove('nav--visible');
-                    } else if (diff < -4) {
-                        navbar.classList.remove('nav--hidden');
-                        navbar.classList.add('nav--visible');
-                    }
-                } else {
-                    navbar.classList.remove('scrolled', 'nav--hidden');
-                }
-                lastScroll = current;
-
-                // Update --scroll-y for CSS parallax blobs
-                document.documentElement.style.setProperty('--scroll-y', current + 'px');
-                state.scrollY = current;
-                state.scrollDirection = diff > 0 ? 'down' : 'up';
-                scrollTicking = false;
-            });
+        if (current > 80) {
+            navbar.classList.add('scrolled');
+            if (diff > 4) {
+                navbar.classList.add('nav--hidden');
+                navbar.classList.remove('nav--visible');
+            } else if (diff < -4) {
+                navbar.classList.remove('nav--hidden');
+                navbar.classList.add('nav--visible');
+            }
+        } else {
+            navbar.classList.remove('scrolled', 'nav--hidden');
         }
-    }, { passive: true });
+        lastScroll = current;
 
-    // Magnetic nav links
-    if (!state.isMobile) {
+        // Update --scroll-y for CSS parallax blobs
+        document.documentElement.style.setProperty('--scroll-y', current + 'px');
+        state.scrollY = current;
+        state.scrollDirection = diff > 0 ? 'down' : 'up';
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Magnetic nav links — only on high/medium, desktop
+    if (!state.isMobile && isNotLow()) {
         const links = navbar.querySelectorAll('.nav-links a');
         links.forEach(link => {
             link.addEventListener('mousemove', e => {
@@ -290,7 +348,6 @@ function initNavbar() {
                 else indicator.style.opacity = '0';
             });
 
-            // Set on active link initially
             const active = navLinksWrapper.querySelector('.active');
             if (active) {
                 setTimeout(() => moveIndicator(active), 100);
@@ -318,14 +375,14 @@ function initNavbar() {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 7. HERO CANVAS — Neural Particles connected to gear points
+// 7. HERO CANVAS — Neural Particles (gated by performance tier)
 // ─────────────────────────────────────────────────────────────────────
 function initHeroCanvas() {
     const canvas = document.getElementById('hero-canvas');
-    if (!canvas || state.isMobile || state.batteryLow) return;
+    if (!canvas || state.isMobile || isLow()) return;
 
     const ctx = canvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR at 2 for perf
 
     // Gear anchor points (from SVG viewport, normalized to canvas space)
     const GEAR_ANCHORS_NORM = [
@@ -336,31 +393,32 @@ function initHeroCanvas() {
         { x: 280/420, y: 320/420 },
     ];
 
+    // Particle count based on tier
+    const BASE_PARTICLES = isMedium() ? 20 : 50;
+    const CONNECTION_DIST = isMedium() ? 80 : 100;
+    const DRAW_CONNECTIONS = isHigh(); // Skip connection lines on medium
+
     let W, H, particles = [], heroContentRect = null, animRunning = true;
-    const MAX_PARTICLES = 50;
-    const CONNECTION_DIST = 100;
     const FPS_SAMPLES = [];
     let lastFrame = performance.now();
     let lowPerfMode = false;
 
     function resize() {
-        // Global background is position:fixed inset:0, so use window dimensions
         W = window.innerWidth;
         H = window.innerHeight;
         canvas.width  = W * dpr;
         canvas.height = H * dpr;
         canvas.style.width  = W + 'px';
         canvas.style.height = H + 'px';
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         initParticles();
-        // Update hero text exclusion zone (only on home page)
         const content = document.querySelector('.hero-content');
         if (content) heroContentRect = content.getBoundingClientRect();
     }
 
     function initParticles() {
         particles = [];
-        const count = lowPerfMode ? 25 : MAX_PARTICLES;
+        const count = lowPerfMode ? Math.floor(BASE_PARTICLES / 2) : BASE_PARTICLES;
         for (let i = 0; i < count; i++) {
             particles.push(createParticle());
         }
@@ -374,7 +432,7 @@ function initHeroCanvas() {
             vy: (Math.random() - 0.5) * 0.45,
             radius: Math.random() * 1.8 + 0.6,
             alpha: Math.random() * 0.5 + 0.2,
-            hue: Math.random() < 0.6 ? 0 : 220, // red or blue
+            hue: Math.random() < 0.6 ? 0 : 220,
         };
     }
 
@@ -402,7 +460,6 @@ function initHeroCanvas() {
             r: 0, maxR: 200,
             alpha: 0.6,
         };
-        // Scatter nearby particles
         particles.forEach(p => {
             const dx = p.x - shockwave.x;
             const dy = p.y - shockwave.y;
@@ -434,21 +491,22 @@ function initHeroCanvas() {
         // FPS monitoring
         const delta = ts - lastFrame;
         lastFrame = ts;
-        FPS_SAMPLES.push(1000 / delta);
-        if (FPS_SAMPLES.length > 30) FPS_SAMPLES.shift();
-        const avgFPS = FPS_SAMPLES.reduce((a,b) => a + b, 0) / FPS_SAMPLES.length;
-        state.fps = Math.round(avgFPS);
-        if (!lowPerfMode && avgFPS < 40 && FPS_SAMPLES.length === 30) {
-            lowPerfMode = true;
-            particles = particles.slice(0, 25);
+        if (delta > 0) {
+            FPS_SAMPLES.push(1000 / delta);
+            if (FPS_SAMPLES.length > 30) FPS_SAMPLES.shift();
+            const avgFPS = FPS_SAMPLES.reduce((a,b) => a + b, 0) / FPS_SAMPLES.length;
+            state.fps = Math.round(avgFPS);
+            if (!lowPerfMode && avgFPS < 35 && FPS_SAMPLES.length === 30) {
+                lowPerfMode = true;
+                particles = particles.slice(0, Math.floor(particles.length / 2));
+            }
         }
 
         ctx.clearRect(0, 0, W, H);
 
-        const gearAnchors = getGearAnchors();
-
-        // Draw gear connections (dimmer dedicated lines)
-        if (!lowPerfMode) {
+        // Draw gear connections only on HIGH
+        if (DRAW_CONNECTIONS && !lowPerfMode) {
+            const gearAnchors = getGearAnchors();
             gearAnchors.forEach(anchor => {
                 particles.forEach(p => {
                     const dx = p.x - anchor.x;
@@ -482,14 +540,13 @@ function initHeroCanvas() {
                 p.vy += (Math.random() - 0.5) * 0.3;
             }
 
-            // Speed limit (damping after shockwave scatter)
+            // Speed limit
             const speed = Math.hypot(p.vx, p.vy);
             if (speed > 2) { p.vx = (p.vx / speed) * 2; p.vy = (p.vy / speed) * 2; }
-            // Gradual slow-down back to normal
             p.vx *= 0.99; p.vy *= 0.99;
 
-            // Mouse attraction (subtle)
-            if (!state.isMobile) {
+            // Mouse attraction (subtle, desktop only)
+            if (!state.isMobile && isHigh()) {
                 const mRect = canvas.getBoundingClientRect();
                 const lmx = state.mouseX - mRect.left;
                 const lmy = state.mouseY - mRect.top;
@@ -512,8 +569,8 @@ function initHeroCanvas() {
             ctx.fill();
         });
 
-        // Draw inter-particle connection lines
-        if (!lowPerfMode) {
+        // Draw inter-particle connection lines (HIGH only)
+        if (DRAW_CONNECTIONS && !lowPerfMode) {
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
@@ -532,8 +589,8 @@ function initHeroCanvas() {
             }
         }
 
-        // Shockwave ring
-        if (shockwave) {
+        // Shockwave ring (HIGH only)
+        if (shockwave && isHigh()) {
             shockwave.r += 6;
             shockwave.alpha *= 0.93;
             ctx.beginPath();
@@ -545,15 +602,11 @@ function initHeroCanvas() {
         }
     }
 
-    // Global background is always visible (position:fixed), no need for IntersectionObserver
     state.canvasVisible = true;
 
-    // Debounced resize on window resize
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(resize, 200);
-    });
+    // Debounced resize
+    const debouncedResize = debounce(resize, 200);
+    window.addEventListener('resize', debouncedResize);
 
     resize();
     requestAnimationFrame(draw);
@@ -579,13 +632,11 @@ function initHeroEntrance() {
     const badge     = document.querySelector('.badge');
     const cta       = document.querySelector('.hero-cta');
 
-    // Split title words into spans safely (preserves existing HTML like <span class="gradient-text">)
     if (heroTitle) {
         function wrapTextNodes(node) {
-            if (node.nodeType === 3) { // Text node
+            if (node.nodeType === 3) {
                 const words = node.nodeValue.trim().split(/(\s+)/);
                 if (words.length === 0 || words[0] === '') return;
-                
                 const frag = document.createDocumentFragment();
                 words.forEach(w => {
                     if (w.trim()) {
@@ -599,25 +650,23 @@ function initHeroEntrance() {
                 });
                 node.parentNode.replaceChild(frag, node);
             } else if (node.nodeType === 1 && !node.classList.contains('hero-word')) {
-                // If it's the gradient text, just animate the wrapper itself to preserve background-clip
                 if (node.classList.contains('gradient-text')) {
                     node.classList.add('hero-word');
                 } else {
-                    // Element node
                     Array.from(node.childNodes).forEach(wrapTextNodes);
                 }
             }
         }
-        
+
         Array.from(heroTitle.childNodes).forEach(wrapTextNodes);
 
         const words = heroTitle.querySelectorAll('.hero-word');
+        const stagger = isLow() ? 40 : 80; // Faster stagger on low
         words.forEach((w, i) => {
-            setTimeout(() => w.classList.add('word--visible'), i * 80 + 100);
+            setTimeout(() => w.classList.add('word--visible'), i * stagger + 100);
         });
     }
 
-    // Stagger subtitle + CTA
     if (badge) setTimeout(() => { badge.style.opacity = '1'; badge.style.transform = 'none'; }, 50);
     if (heroSub) setTimeout(() => { heroSub.style.opacity = '1'; heroSub.style.transform = 'none'; }, 350);
     if (cta) setTimeout(() => { cta.style.opacity = '1'; cta.style.transform = 'none'; }, 600);
@@ -660,55 +709,54 @@ function initTypewriter() {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 10. SCROLL SYSTEM — Parallax on hero layers
+// 10. SCROLL SYSTEM — Parallax on hero layers (HIGH/MEDIUM only)
 // ─────────────────────────────────────────────────────────────────────
 function initScrollSystem() {
     const heroContent     = document.querySelector('.hero-content');
     const heroGears       = document.getElementById('gears-container');
     const heroGearsWrap   = document.getElementById('gears-wrapper');
 
-    let scrollTicking2 = false;
-    window.addEventListener('scroll', () => {
-        if (!scrollTicking2) {
-            scrollTicking2 = true;
-            requestAnimationFrame(() => {
-                const sy = window.scrollY;
-                if (heroContent && sy < window.innerHeight) {
-                    heroContent.style.setProperty('--scroll-ty', `${sy * -0.08}px`);
+    const onScroll = rafThrottle(() => {
+        const sy = window.scrollY;
+        if (heroContent && sy < window.innerHeight) {
+            heroContent.style.setProperty('--scroll-ty', `${sy * -0.08}px`);
+        }
+        if (heroGears && sy < window.innerHeight) {
+            heroGears.style.setProperty('--scroll-ty', `${sy * 0.12}px`);
+        }
+    });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Mouse-move parallax on hero elements (HIGH only)
+    if (isHigh()) {
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            const onMouseMove = rafThrottle(e => {
+                const cx = (e.clientX / window.innerWidth  - 0.5) * 2;
+                const cy = (e.clientY / window.innerHeight - 0.5) * 2;
+                if (heroContent) {
+                    heroContent.style.setProperty('--mouse-tx', `${cx * 8}px`);
+                    heroContent.style.setProperty('--mouse-ty', `${cy * 5}px`);
                 }
-                if (heroGears && sy < window.innerHeight) {
-                    heroGears.style.setProperty('--scroll-ty', `${sy * 0.12}px`);
+                if (heroGearsWrap) {
+                    heroGearsWrap.style.setProperty('--mouse-tx', `${cx * 18}px`);
+                    heroGearsWrap.style.setProperty('--mouse-ty', `${cy * 12}px`);
                 }
-                scrollTicking2 = false;
+            });
+
+            hero.addEventListener('mousemove', onMouseMove);
+            hero.addEventListener('mouseleave', () => {
+                if (heroContent) {
+                    heroContent.style.setProperty('--mouse-tx', '0px');
+                    heroContent.style.setProperty('--mouse-ty', '0px');
+                }
+                if (heroGearsWrap) {
+                    heroGearsWrap.style.setProperty('--mouse-tx', '0px');
+                    heroGearsWrap.style.setProperty('--mouse-ty', '0px');
+                }
             });
         }
-    }, { passive: true });
-
-    // Mouse-move parallax on hero elements
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        hero.addEventListener('mousemove', e => {
-            const cx = (e.clientX / window.innerWidth  - 0.5) * 2;
-            const cy = (e.clientY / window.innerHeight - 0.5) * 2;
-            if (heroContent) {
-                heroContent.style.setProperty('--mouse-tx', `${cx * 8}px`);
-                heroContent.style.setProperty('--mouse-ty', `${cy * 5}px`);
-            }
-            if (heroGearsWrap) {
-                heroGearsWrap.style.setProperty('--mouse-tx', `${cx * 18}px`);
-                heroGearsWrap.style.setProperty('--mouse-ty', `${cy * 12}px`);
-            }
-        });
-        hero.addEventListener('mouseleave', () => {
-            if (heroContent) {
-                heroContent.style.setProperty('--mouse-tx', '0px');
-                heroContent.style.setProperty('--mouse-ty', '0px');
-            }
-            if (heroGearsWrap) {
-                heroGearsWrap.style.setProperty('--mouse-tx', '0px');
-                heroGearsWrap.style.setProperty('--mouse-ty', '0px');
-            }
-        });
     }
 }
 
@@ -716,7 +764,6 @@ function initScrollSystem() {
 // 11. SCROLL REVEALS — Per-section personality via data-reveal attribute
 // ─────────────────────────────────────────────────────────────────────
 function initScrollReveals() {
-    // Assign data-reveal variants to known selectors
     const variantMap = [
         { selector: '.philosophy-card',    variant: 'deal' },
         { selector: '.about-card',         variant: 'slide-right' },
@@ -730,10 +777,13 @@ function initScrollReveals() {
         { selector: '.events-cta',         variant: 'fade-up' },
     ];
 
+    // On LOW, simplify all reveals to fade-up
+    const variantOverride = isLow() ? 'fade-up' : null;
+
     variantMap.forEach(({ selector, variant }) => {
         document.querySelectorAll(selector).forEach(el => {
             if (!el.getAttribute('data-reveal')) {
-                el.setAttribute('data-reveal', variant);
+                el.setAttribute('data-reveal', variantOverride || variant);
             }
         });
     });
@@ -744,28 +794,33 @@ function initScrollReveals() {
             if (!entry.isIntersecting) return;
             const el = entry.target;
 
-            // Stagger siblings in same parent
             const siblings = Array.from(
                 el.parentElement.querySelectorAll('[data-reveal]')
             );
             const idx = siblings.indexOf(el);
-            el.style.transitionDelay = (idx * 60) + 'ms';
+            const staggerMs = isLow() ? 30 : 60;
+            el.style.transitionDelay = (idx * staggerMs) + 'ms';
             el.classList.add('revealed');
             obs.unobserve(el);
         });
     }, { threshold: 0.12, rootMargin: '-40px 0px' });
 
-    // Lazy init: only observe elements near or in viewport
     document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
     // Re-run for dynamically added cards (Supabase data)
     document.addEventListener('lrnit:dataLoaded', () => {
+        // Apply variant to newly added cards
+        if (variantOverride) {
+            document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
+                el.setAttribute('data-reveal', 'fade-up');
+            });
+        }
         document.querySelectorAll('[data-reveal]:not(.revealed)').forEach(el => {
             observer.observe(el);
         });
     });
 
-    // Stats counter: count up when visible
+    // Stats counter: count up when visible — using rAF instead of setInterval
     const countObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
@@ -773,11 +828,21 @@ function initScrollReveals() {
             const target = parseInt(el.getAttribute('data-count'), 10);
             let current = 0;
             const step = Math.ceil(target / 60);
-            const timer = setInterval(() => {
-                current = Math.min(current + step, target);
+            const startTime = performance.now();
+
+            function countFrame(now) {
+                const elapsed = now - startTime;
+                // ~60 frames over 1 second
+                const progress = Math.min(elapsed / 1000, 1);
+                current = Math.round(target * progress);
                 el.textContent = current.toLocaleString();
-                if (current >= target) clearInterval(timer);
-            }, 16);
+                if (progress < 1) {
+                    requestAnimationFrame(countFrame);
+                } else {
+                    el.textContent = target.toLocaleString();
+                }
+            }
+            requestAnimationFrame(countFrame);
             countObserver.unobserve(el);
         });
     }, { threshold: 0.5 });
@@ -785,7 +850,7 @@ function initScrollReveals() {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 12. CARD 3D TILT + RADIAL GLOW + MOBILE TOUCH
+// 12. CARD 3D TILT + RADIAL GLOW (HIGH/MEDIUM only)
 // ─────────────────────────────────────────────────────────────────────
 function initCardTilt() {
     const CARD_SELECTORS = [
@@ -822,11 +887,12 @@ function initCardTilt() {
             card.style.setProperty('--mouse-x', x + 'px');
             card.style.setProperty('--mouse-y', y + 'px');
 
-            // Calculate tilt angles (max ±8°)
+            // Calculate tilt angles (max ±8° on high, ±4° on medium)
+            const maxTilt = isHigh() ? 8 : 4;
             const cx = rect.width  / 2;
             const cy = rect.height / 2;
-            targetRX = ((y - cy) / cy) * -8;
-            targetRY = ((x - cx) / cx) *  8;
+            targetRX = ((y - cy) / cy) * -maxTilt;
+            targetRY = ((x - cx) / cx) *  maxTilt;
 
             if (!animating) {
                 animating = true;
@@ -860,19 +926,21 @@ function initMagneticButtons() {
     const BTN_SEL = '.btn-primary, .btn-secondary, .btn-tertiary, .btn-submit-animated, .filter-btn';
     const buttons = document.querySelectorAll(BTN_SEL);
 
-    if (!state.isMobile) {
+    // Magnetic effect: HIGH and MEDIUM, desktop only
+    if (!state.isMobile && isNotLow()) {
         buttons.forEach(btn => {
             btn.addEventListener('mousemove', e => {
                 const r = btn.getBoundingClientRect();
                 const dx = e.clientX - (r.left + r.width  / 2);
                 const dy = e.clientY - (r.top  + r.height / 2);
-                btn.style.transform = `translate(${dx * 0.35}px, ${dy * 0.35}px)`;
+                const strength = isHigh() ? 0.35 : 0.2;
+                btn.style.transform = `translate(${dx * strength}px, ${dy * strength}px)`;
             });
             btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
         });
     }
 
-    // Ripple on click (all devices)
+    // Ripple on click (all devices, all tiers)
     document.addEventListener('click', e => {
         const btn = e.target.closest(BTN_SEL);
         if (!btn) return;
@@ -891,7 +959,7 @@ function initMagneticButtons() {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 14. TEXT SCRAMBLE on section title hover
+// 14. TEXT SCRAMBLE on section title hover (HIGH only)
 // ─────────────────────────────────────────────────────────────────────
 function initTextScramble() {
     if (state.isMobile) return;
@@ -899,7 +967,6 @@ function initTextScramble() {
 
     document.querySelectorAll('.section-title').forEach(title => {
         const originalText = title.textContent;
-        // Set aria-label so screen reader always announces real text
         title.setAttribute('aria-label', originalText);
 
         let scrambleRAF = null, scrambling = false;
@@ -908,7 +975,6 @@ function initTextScramble() {
             if (scrambling) return;
             scrambling = true;
 
-            // Wrap every char in a span
             title.innerHTML = [...originalText].map((c, i) =>
                 c.trim() ? `<span class="scramble-char" data-final="${c}" data-idx="${i}">${c}</span>` : c
             ).join('');
@@ -935,7 +1001,7 @@ function initTextScramble() {
                 if (resolvedCount < spans.length) {
                     scrambleRAF = requestAnimationFrame(frame);
                 } else {
-                    title.innerHTML = originalText; // restore clean
+                    title.innerHTML = originalText;
                     scrambling = false;
                 }
             }
@@ -966,12 +1032,12 @@ function initFloatingLabels() {
         field.addEventListener('blur',   () => { wrapper.classList.remove('is-focused'); update(); });
         field.addEventListener('input',  update);
         field.addEventListener('change', update);
-        update(); // set initial state
+        update();
     });
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 16. CONFETTI BURST (register + join success states)
+// 16. CONFETTI BURST (tier-adaptive piece count)
 // ─────────────────────────────────────────────────────────────────────
 function initConfetti() {
     window.lrnit = window.lrnit || {};
@@ -986,8 +1052,11 @@ function initConfetti() {
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
 
+        // Tier-adaptive piece count
+        const pieceCount = isHigh() ? 80 : (isMedium() ? 30 : 15);
+
         const COLORS = ['#DC0000','#ff6b6b','#ffffff','#ffd700','#050E3C','#3b82f6'];
-        const pieces = Array.from({ length: 80 }, () => ({
+        const pieces = Array.from({ length: pieceCount }, () => ({
             x: Math.random() * canvas.width,
             y: Math.random() * -canvas.height * 0.5,
             w: Math.random() * 10 + 4,
@@ -1008,7 +1077,7 @@ function initConfetti() {
             pieces.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.08; // gravity
+                p.vy += 0.08;
                 p.rot += p.rotV;
                 if (p.y > canvas.height) p.alpha -= 0.02;
                 if (p.alpha > 0) allDone = false;
@@ -1032,22 +1101,14 @@ function initConfetti() {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 17. GEAR SYSTEM ENHANCEMENT — increase parallax range
-// ─────────────────────────────────────────────────────────────────────
-// The base gear animation is in main.js; this just enhances the nudge range.
-// (The existing mousemove handler in main.js uses 12px/8px — motion.js skips
-//  duplicate; main.js will be cleaned up in Phase 7.)
-
-// ─────────────────────────────────────────────────────────────────────
-// 18. PERFORMANCE GUARDS
+// 17. PERFORMANCE GUARDS
 // ─────────────────────────────────────────────────────────────────────
 function initPerformanceGuards() {
-    // Lazy section init: re-observe data-reveal items when near viewport
+    // Lazy section init: observe sections approaching viewport
     const lazyObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
             const section = entry.target;
-            // Trigger tilt init for cards inside this section
             const cards = section.querySelectorAll('[data-reveal]');
             cards.forEach(el => {
                 if (!el.classList.contains('revealed')) {
@@ -1065,6 +1126,11 @@ function initPerformanceGuards() {
             b.addEventListener('levelchange', () => {
                 if (b.level < 0.2 && !b.charging) {
                     state.batteryLow = true;
+                    if (state.performanceMode === 'high') {
+                        state.performanceMode = 'medium';
+                        document.documentElement.classList.remove('perf-high');
+                        document.documentElement.classList.add('perf-medium');
+                    }
                     const canvas = document.getElementById('hero-canvas');
                     if (canvas) canvas.style.display = 'none';
                 }

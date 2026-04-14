@@ -1,6 +1,6 @@
 // main.js — LRNit legacy helpers
 // Loader + cursor + scroll-reveals + card-tilt are now handled by init.js + motion.js.
-// This file only keeps: gear animation, smooth scroll, navbar scroll class, hamburger fallback.
+// This file only keeps: gear animation, smooth scroll, hamburger fallback.
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -42,46 +42,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* --- Parallax CSS variable (throttled via rAF) --- */
-    let parallaxTicking = false;
-    window.addEventListener('scroll', () => {
-        if (!parallaxTicking) {
+    /* --- Parallax CSS variable (motion.js now handles this — skip if motion is loaded) --- */
+    // motion.js sets --scroll-y in its navbar handler. Only set here as fallback.
+    if (!window._motionInitDone) {
+        let parallaxTicking = false;
+        window.addEventListener('scroll', () => {
+            if (parallaxTicking) return;
             parallaxTicking = true;
             requestAnimationFrame(() => {
                 document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
                 parallaxTicking = false;
             });
-        }
-    }, { passive: true });
+        }, { passive: true });
+    }
 
     /* --- Mechanical Gear Animation (Hero SVG) --- */
+    // Gate by performance mode: skip on LOW tier
+    const perfMode = (window.lrnit && window.lrnit.getPerformanceMode)
+        ? window.lrnit.getPerformanceMode()
+        : 'high'; // fallback to high if state not loaded yet
+
     const gears         = document.querySelectorAll('.gear');
     const gearsContainer = document.getElementById('gears-container');
     const gearsWrapper  = document.getElementById('gears-wrapper');
     const gearsSvg      = document.querySelector('.gears-svg');
 
-    if (gears.length > 0 && gearsContainer && window.innerWidth > 768) {
+    if (gears.length > 0 && gearsContainer && window.innerWidth > 768 && perfMode !== 'low') {
         let speedMultiplier = 1;
         let targetSpeedMultiplier = 1;
         const PROXIMITY_RADIUS = 300;
         let gearAnimRunning = true;
 
-        document.addEventListener('mousemove', (e) => {
-            const rect = gearsContainer.getBoundingClientRect();
-            const dist = Math.hypot(e.clientX - (rect.left + rect.width / 2), e.clientY - (rect.top + rect.height / 2));
-            const isNear = dist < PROXIMITY_RADIUS;
+        // Only add mousemove for gear proximity on HIGH and MEDIUM
+        if (perfMode !== 'low') {
+            document.addEventListener('mousemove', (e) => {
+                const rect = gearsContainer.getBoundingClientRect();
+                const dist = Math.hypot(e.clientX - (rect.left + rect.width / 2), e.clientY - (rect.top + rect.height / 2));
+                const isNear = dist < PROXIMITY_RADIUS;
 
-            if (gearsSvg) gearsSvg.classList.toggle('near-cursor', isNear);
+                if (gearsSvg) gearsSvg.classList.toggle('near-cursor', isNear);
 
-            targetSpeedMultiplier = isNear ? 1 + (1 - dist / PROXIMITY_RADIUS) * 1.5 : 1;
+                targetSpeedMultiplier = isNear ? 1 + (1 - dist / PROXIMITY_RADIUS) * 1.5 : 1;
 
-            // Mouse-nudge parallax (unless motion.js already handles it)
-            if (gearsWrapper && !window._motionInitDone) {
-                const nudgeX = ((e.clientX / window.innerWidth)  - 0.5) * 12;
-                const nudgeY = ((e.clientY / window.innerHeight) - 0.5) * 8;
-                gearsWrapper.style.transform = `translate(${nudgeX}px, ${nudgeY}px)`;
-            }
-        }, { passive: true });
+                // Mouse-nudge parallax (unless motion.js already handles it via initScrollSystem)
+                if (gearsWrapper && !window._motionInitDone) {
+                    const nudgeX = ((e.clientX / window.innerWidth)  - 0.5) * 12;
+                    const nudgeY = ((e.clientY / window.innerHeight) - 0.5) * 8;
+                    gearsWrapper.style.transform = `translate(${nudgeX}px, ${nudgeY}px)`;
+                }
+            }, { passive: true });
+        }
 
         // Pause gear animation when tab is hidden
         document.addEventListener('visibilitychange', () => {
@@ -97,7 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const delta = time - lastTime;
             lastTime = time;
+
+            // On MEDIUM, reduce speed multiplier range
+            const speedCap = perfMode === 'medium' ? 1.5 : 2.5;
             speedMultiplier += (targetSpeedMultiplier - speedMultiplier) * 0.05;
+            speedMultiplier = Math.min(speedMultiplier, speedCap);
 
             gears.forEach(gear => {
                 const ratio     = parseFloat(gear.getAttribute('data-ratio'));

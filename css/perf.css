@@ -1,0 +1,450 @@
+/*========================================================================
+  perf.css — LRNit Performance Tier Overrides
+  Scoped to html.perf-medium and html.perf-low classes.
+  NO global * selectors with !important.
+  Preserves clean UI on all tiers — only decorative effects are adjusted.
+========================================================================*/
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MEDIUM TIER — Reduced effects, still visually rich
+═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop-filter: reduce blur intensity ─────────────────────────── */
+html.perf-medium .navbar {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+html.perf-medium .about-card,
+html.perf-medium .philosophy-card {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+html.perf-medium .btn-secondary {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+html.perf-medium .toast {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+html.perf-medium .registration-card {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* ── Shadows: simplify to single layer ──────────────────────────────── */
+html.perf-medium .team-card:hover,
+html.perf-medium .event-full-card:hover,
+html.perf-medium .announcement-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+html.perf-medium .navbar.scrolled {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Ambient orbs: hide 3rd orb, reduce sizes ───────────────────────── */
+html.perf-medium .ambient-orb.orb-3 {
+    display: none;
+}
+
+html.perf-medium .ambient-orb.orb-1 {
+    width: 350px;
+    height: 350px;
+    filter: blur(40px);
+}
+
+html.perf-medium .ambient-orb.orb-2 {
+    width: 280px;
+    height: 280px;
+    filter: blur(40px);
+}
+
+/* ── Animations: halve durations for decorative loops ───────────────── */
+html.perf-medium .ambient-orb {
+    animation-duration: 28s;
+}
+
+html.perf-medium .bg-geo {
+    animation-duration: 40s;
+}
+
+html.perf-medium .hero-aurora,
+html.perf-medium .hero-aurora-2 {
+    animation-duration: 20s;
+}
+
+/* ── Meteors: reduce to 1 ───────────────────────────────────────────── */
+html.perf-medium .bg-meteor.meteor-3 {
+    display: none;
+}
+
+/* ── Cursor: hide trails (JS also gates this) ───────────────────────── */
+html.perf-medium .cursor-trail {
+    display: none;
+}
+
+/* ── Spotlight: hide ────────────────────────────────────────────────── */
+html.perf-medium #spotlight {
+    display: none;
+}
+
+/* ── SVG gear filters: simplify ─────────────────────────────────────── */
+html.perf-medium .gears-svg {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6)) brightness(1.1);
+}
+
+html.perf-medium .gears-svg.near-cursor {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6)) brightness(1.15);
+}
+
+/* ── Grid pulse: simplify ───────────────────────────────────────────── */
+html.perf-medium .bg-pulse-grid {
+    animation: none;
+    opacity: 0.4;
+}
+
+/* ── Glow blobs: reduce size and blur ───────────────────────────────── */
+html.perf-medium html::after,
+html.perf-medium body::after {
+    width: 500px;
+    height: 500px;
+    filter: blur(80px);
+}
+
+/* ── Card radial glow: disable ──────────────────────────────────────── */
+html.perf-medium .team-card::after,
+html.perf-medium .event-full-card::after,
+html.perf-medium .announcement-card::after {
+    display: none;
+}
+
+/* ── Cinematic loader: simplify ─────────────────────────────────────── */
+html.perf-medium .cl-bg-glow {
+    filter: blur(40px);
+    animation: none;
+    opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LOW TIER — Minimal decorative effects, clean and fast
+   Content, layout, and readability fully preserved.
+═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop-filter: replace with solid backgrounds ────────────────── */
+html.perf-low .navbar {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(2, 4, 10, 0.95);
+}
+
+html.perf-low .navbar.scrolled {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(2, 4, 10, 0.97);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+html.perf-low .about-card,
+html.perf-low .philosophy-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(20, 20, 30, 0.92);
+}
+
+html.perf-low .btn-secondary {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+html.perf-low .toast {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(8, 12, 30, 0.96);
+}
+
+html.perf-low .registration-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(15, 18, 35, 0.95);
+}
+
+html.perf-low .team-modal-inner,
+html.perf-low .modal-content {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(10, 14, 30, 0.97);
+}
+
+html.perf-low .nav-links {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* ── Hide all decorative background elements ────────────────────────── */
+html.perf-low #hero-canvas,
+html.perf-low .ambient-orb,
+html.perf-low .bg-geo,
+html.perf-low .bg-meteor,
+html.perf-low .bg-pulse-grid,
+html.perf-low .hero-aurora,
+html.perf-low .hero-aurora-2,
+html.perf-low .hero-scanlines {
+    display: none;
+}
+
+/* ── Hide gears on all screen sizes ────────────────────────────────── */
+html.perf-low .hero-gears-container {
+    display: none;
+}
+
+html.perf-low .neural-network,
+html.perf-low .energy-sparks {
+    display: none;
+}
+
+/* ── Hide cursor effects ────────────────────────────────────────────── */
+html.perf-low .cursor-dot,
+html.perf-low .cursor-trail {
+    display: none;
+}
+
+html.perf-low #spotlight {
+    display: none;
+}
+
+/* ── Restore default cursor (override motion.css cursor:none) ──────── */
+html.perf-low,
+html.perf-low *,
+html.perf-low a,
+html.perf-low button {
+    cursor: auto;
+}
+
+/* ── Shadows: remove from cards, keep subtle border ─────────────────── */
+html.perf-low .team-card,
+html.perf-low .event-full-card,
+html.perf-low .event-card,
+html.perf-low .announcement-card,
+html.perf-low .contact-card,
+html.perf-low .flagship-event-card,
+html.perf-low .about-card,
+html.perf-low .philosophy-card {
+    box-shadow: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.perf-low .team-card:hover,
+html.perf-low .event-full-card:hover,
+html.perf-low .announcement-card:hover,
+html.perf-low .contact-card:hover {
+    box-shadow: none;
+}
+
+/* ── Card radial glow: disable ──────────────────────────────────────── */
+html.perf-low .team-card::after,
+html.perf-low .event-full-card::after,
+html.perf-low .announcement-card::after {
+    display: none;
+}
+
+/* ── Filters: remove heavy ones ─────────────────────────────────────── */
+html.perf-low .gears-svg {
+    filter: none;
+}
+
+html.perf-low .gradient-text {
+    filter: none;
+}
+
+/* ── Glow blobs: hide ───────────────────────────────────────────────── */
+html.perf-low html::after,
+html.perf-low body::after {
+    display: none;
+}
+
+/* ── Noise texture: hide ────────────────────────────────────────────── */
+html.perf-low html::before {
+    display: none;
+}
+
+/* ── Animations: reduce intensity, NOT kill ─────────────────────────── */
+/* Keep subtle fade-in so UI doesn't feel broken.
+   Only decorative infinite loops are stopped (via display:none above).
+   Content reveals still animate, just faster. */
+html.perf-low [data-reveal] {
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+}
+
+html.perf-low .hero-word {
+    transition-duration: 0.25s;
+}
+
+/* ── btn-primary pulse: reduce to single run ────────────────────────── */
+html.perf-low .btn-primary {
+    animation-iteration-count: 1;
+    animation-duration: 0.5s;
+}
+
+/* ── Badge border sweep: static ─────────────────────────────────────── */
+html.perf-low .badge::before {
+    animation: none;
+    opacity: 0;
+}
+
+/* ── Page transition: instant ───────────────────────────────────────── */
+html.perf-low #page-transition {
+    animation-duration: 0.15s;
+}
+
+/* ── Skeleton shimmer: reduce ───────────────────────────────────────── */
+html.perf-low .skeleton-line,
+html.perf-low .skeleton-block,
+html.perf-low .skeleton-circle {
+    animation-duration: 2.5s;
+}
+
+/* ── Typewriter caret: keep (lightweight) ───────────────────────────── */
+
+/* ── Scroll progress bar: keep (lightweight) ────────────────────────── */
+
+/* ── Loader: simplify ───────────────────────────────────────────────── */
+html.perf-low .cl-bg-glow {
+    display: none;
+}
+
+html.perf-low .cl-gear-cw,
+html.perf-low .cl-gear-ccw {
+    animation-duration: 12s;
+}
+
+html.perf-low .cl-gear-cluster {
+    animation: none;
+}
+
+html.perf-low .cl-spark {
+    display: none;
+}
+
+/* ── Card tilt: no 3D transform (JS also gates this) ────────────────── */
+html.perf-low .team-card,
+html.perf-low .event-full-card,
+html.perf-low .announcement-card,
+html.perf-low .contact-card {
+    transform: none;
+}
+
+/* ── Cinematic loader gears: simplify ───────────────────────────────── */
+html.perf-low #cinematic-loader .cl-gears-svg {
+    filter: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PERFORMANCE TOGGLE UI
+═══════════════════════════════════════════════════════════════════════ */
+.perf-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1rem;
+}
+
+.perf-toggle-label {
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.perf-toggle select {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.5rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.perf-toggle select:focus {
+    border-color: rgba(176, 4, 4, 0.5);
+}
+
+.perf-toggle select option {
+    background: #0a0e1e;
+    color: #f0f4ff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST PERFORMANCE (applies to all tiers on small screens)
+═══════════════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 768px) {
+    /* Reduce padding for faster visual density */
+    html.perf-medium section,
+    html.perf-low section {
+        padding: 60px 0;
+    }
+
+    html.perf-medium .section-header,
+    html.perf-low .section-header {
+        margin-bottom: 40px;
+    }
+
+    /* Simplify body gradient on low-end mobile */
+    html.perf-low body {
+        background:
+            linear-gradient(180deg, #020617 0%, #050E3C 50%, #002455 100%);
+        background-attachment: scroll; /* fixed attachment causes mobile repaint */
+    }
+
+    /* Remove noise overlay on mobile */
+    html.perf-low html::before {
+        display: none;
+    }
+
+    /* Remove glow blobs on mobile */
+    html.perf-low html::after,
+    html.perf-low body::after {
+        display: none;
+    }
+
+    /* Medium: also simplify on mobile */
+    html.perf-medium body {
+        background-attachment: scroll;
+    }
+
+    html.perf-medium html::after,
+    html.perf-medium body::after {
+        width: 300px;
+        height: 300px;
+        filter: blur(60px);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    html.perf-medium section,
+    html.perf-low section {
+        padding: 45px 0;
+    }
+
+    html.perf-low .container {
+        padding: 0 20px;
+    }
+}

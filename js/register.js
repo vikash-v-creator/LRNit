@@ -122,6 +122,7 @@ function renderEventBanner(ev) {
             <p style="margin-top: 1rem; color: #ccc; font-size: 0.95rem; line-height: 1.6;">${sanitize(ev.description || "")}</p>
         </div>
     `;
+    eventBanner.style.display = 'flex'; // Show banner now that it has content
     eventBanner.classList.add('cl-reveal'); // Animate the container
 }
 

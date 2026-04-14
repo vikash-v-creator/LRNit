@@ -7,7 +7,7 @@
     <title>LRNit | Ignite Your Technical Potential</title>
     <meta name="description"
         content="LRNit is a university technical club fostering hands-on learning, collaborative projects, and innovation in engineering and technology.">
-    <!-- Modern Fonts -->
+    <!-- Font Preloads -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -15,10 +15,10 @@
         rel="stylesheet">
     <!-- Icons -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <!-- Main Stylesheet -->
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="./css/style.css">
-    <!-- Motion System -->
     <link rel="stylesheet" href="./css/motion.css">
+    <link rel="stylesheet" href="./css/perf.css">
 </head>
 
 <body>
@@ -70,7 +70,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
-                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img" loading="lazy">
                 LRN<span class="accent">it</span>
             </a>
             <ul class="nav-links">
@@ -485,7 +485,7 @@
     </footer>
 
     <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://unpkg.com/lucide@0.372.0" defer></script>
 
     <!-- Boot Sequencer (loads state → init → motion lazily) -->
     <script type="module" src="./js/init.js" defer></script>

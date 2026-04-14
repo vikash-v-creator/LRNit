@@ -12,8 +12,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
-    <!-- Motion System -->
     <link rel="stylesheet" href="./css/motion.css">
+    <link rel="stylesheet" href="./css/perf.css">
     <style>
         .event-banner {
             max-width: 800px;
@@ -22,7 +22,7 @@
             border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 16px;
             overflow: hidden;
-            display: flex;
+            display: none !important;
             flex-direction: column;
         }
 
@@ -116,7 +116,7 @@
         
         #loading-state, #error-state {
             text-align: center;
-            padding: 4rem 1rem;
+            padding: 2.5rem 1rem;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -131,6 +131,67 @@
         
         #registration-content {
             display: none;
+        }
+
+        .reg-hero {
+            padding-top: 80px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        .reg-hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            margin-bottom: 0;
+        }
+
+        /* Force tight spacing between heading and form */
+        #registration-content {
+            display: none;
+            padding-top: 1.5rem !important;
+            margin-top: 0 !important;
+        }
+        #registration-content .registration-card {
+            margin-top: 0;
+        }
+        /* Make card visible immediately (don't wait for reveal animation) */
+        #registration-content .registration-card.cl-reveal {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Mobile spacing fix */
+        @media screen and (max-width: 768px) {
+            .reg-hero {
+                padding-top: 70px;
+            }
+            #registration-content {
+                padding-top: 1rem !important;
+            }
+            .participant-card {
+                padding: 1.2rem;
+                margin-bottom: 1rem;
+            }
+            .event-banner {
+                margin-bottom: 1.5rem;
+            }
+            .event-banner h2 {
+                font-size: 1.5rem;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .reg-hero {
+                padding-top: 64px;
+            }
+            #registration-content {
+                padding-top: 0.75rem !important;
+            }
+            .participant-card {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            .event-banner-content {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
@@ -161,7 +222,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="./index.html" class="logo">
-                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img">
+                <img src="./assets/logo.png" alt="LRNit Logo" class="logo-img" loading="lazy">
                 LRN<span class="accent">it</span>
             </a>
             <ul class="nav-links">
@@ -180,8 +241,8 @@
         </div>
     </nav>
 
-    <div style="padding-top: 120px; text-align: center; margin-bottom: 1.5rem;">
-        <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.2rem, 5vw, 3.5rem); margin-bottom: 0.75rem;">Event <span class="gradient-text">Registration</span></h1>
+    <div class="reg-hero">
+        <h1>Event <span class="gradient-text">Registration</span></h1>
     </div>
 
     <!-- Empty marker replaced loading state -->
