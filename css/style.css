@@ -761,22 +761,11 @@ section {
 
 @media screen and (max-width: 768px) {
     .hero-title {
-        font-size: clamp(2rem, 9vw, 3.2rem);
+        font-size: clamp(2rem, 8vw, 3rem);
     }
+    /* Gears hidden on tablet/mobile — display:none set in responsive block */
     .hero-gears-container {
-        width: 280px;
-        height: 280px;
-        opacity: 0.8;
-    }
-    /* Mobile Gear Optimizations */
-    .gears-svg {
-        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
-    }
-    .gears-svg.near-cursor {
-        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
-    }
-    .gear circle {
-        filter: none !important;
+        display: none !important;
     }
     .neural-network, .energy-sparks {
         display: none !important;
@@ -2883,7 +2872,9 @@ section {
     .event-poster-card:hover { transform: none; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
 }
 
-/* 3. Breakpoints Overhaul */
+/* ═══════════════════════════════════════════════════════════════ */
+/* 3. RESPONSIVE BREAKPOINTS — Mobile-First Polish               */
+/* ═══════════════════════════════════════════════════════════════ */
 
 /* Desktop + TV (> 1200px) */
 @media screen and (min-width: 1200px) {
@@ -2893,59 +2884,285 @@ section {
     }
 }
 
-/* Laptop / iPad Pro (<= 1024px) */
+/* ─── Laptop / iPad Pro (≤ 1024px) ─────────────────────────── */
 @media screen and (max-width: 1024px) {
-    .hero-content { width: 100%; max-width: 600px; margin: 0 auto; text-align: center; }
-    .hero-inner-container { flex-direction: column; align-items: center; justify-content: center; padding-top: 80px; gap: 40px; }
+    section { padding: 80px 0; }
+
+    .hero-content {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .hero-inner-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 80px;
+        gap: 40px;
+    }
     .hero-cta { justify-content: center; }
     .hero-subtitle { margin-left: auto; margin-right: auto; }
+
+    /* Team grid: 3 cards per row */
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    /* Contact: keep horizontal */
+    .contact-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    .contact-card { padding: 24px 16px; }
 }
 
-/* Tablet (<= 768px) */
+/* ─── Tablet (≤ 768px) ─────────────────────────────────────── */
 @media screen and (max-width: 768px) {
+    section { padding: 60px 0; }
     .section-header { margin-bottom: 40px; }
-    
-    /* Touch friendly sizes */
-    .btn-primary, .btn-secondary, .btn-tertiary { padding: 12px 24px; min-height: 48px; min-width: 48px; border-radius: 24px; }
+    .section-title { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+    .section-header p { font-size: 1rem; }
+
+    /* ── Touch friendly sizes ── */
+    .btn-primary, .btn-secondary, .btn-tertiary {
+        padding: 12px 24px;
+        min-height: 48px;
+        min-width: 48px;
+        border-radius: 24px;
+    }
     input, select, textarea { min-height: 48px; }
-    
-    /* Hero Gear mobile sizing */
-    .hero-gears-container { width: 100%; max-width: 320px; aspect-ratio: 1/1; opacity: 0.9; }
-    
-    .event-card { flex-direction: column; align-items: flex-start; text-align: left; padding: 20px; }
-    .event-date { flex-direction: row; margin-bottom: 15px; margin-right: 0; width: auto; padding: 10px 20px; border-radius: 30px; gap: 10px; }
+
+    /* ── HERO: Hide gears, center text only ── */
+    .hero {
+        min-height: auto;
+        padding: 120px 0 60px;
+    }
+    .hero-gears-container {
+        display: none !important;
+    }
+    .hero-inner-container {
+        text-align: center;
+        padding-top: 0;
+    }
+    .hero-content {
+        width: 100%;
+        max-width: 100%;
+    }
+    .hero-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+        white-space: normal;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+        max-width: 90%;
+        margin: 0 auto 32px;
+    }
+    .hero-cta {
+        justify-content: center;
+        gap: 12px;
+    }
+    .hero::before { display: none; }
+    .hero-grid-overlay { opacity: 0.15; }
+
+    /* ── TEAM: Compact 3-per-row grid ── */
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    .team-card {
+        padding: 18px 10px;
+        border-radius: 12px;
+    }
+    .team-avatar {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+    }
+    .team-avatar-img {
+        width: 40px;
+        height: 40px;
+    }
+    .team-avatar-placeholder {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    .team-name {
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+    }
+    .team-role {
+        font-size: 0.65rem;
+        margin-bottom: 4px;
+        letter-spacing: 0.3px;
+    }
+    .team-bio {
+        display: none; /* Hide bios on mobile for compact view */
+    }
+    .team-social {
+        font-size: 0.75rem;
+    }
+
+    /* ── CONTACT: Horizontal single row ── */
+    .contact-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .contact-card {
+        padding: 20px 10px;
+        border-radius: 12px;
+    }
+    .contact-icon {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+    }
+    .contact-card h3 {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+    }
+    .contact-card p {
+        font-size: 0.75rem;
+    }
+
+    /* ── Events ── */
+    .event-card {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        padding: 20px;
+    }
+    .event-date {
+        flex-direction: row;
+        margin-bottom: 15px;
+        margin-right: 0;
+        width: auto;
+        padding: 10px 20px;
+        border-radius: 30px;
+        gap: 10px;
+    }
     .event-date .day { font-size: 1.4rem; }
     .event-date .month { font-size: 0.85rem; margin-top: 0; }
-    
-    /* Flagship override */
-    .flagship-event-content-inner, .event-poster-content-inner { width: 100%; }
-    
-    /* Registration fixes */
+    .flagship-event-content-inner,
+    .event-poster-content-inner { width: 100%; }
+
+    /* ── Registration ── */
     .registration-card { padding: 2rem 1.5rem; }
     .form-row { grid-template-columns: 1fr; gap: 0; }
-    
-    /* Turn off intense FX */
-    .hero-grid-overlay { opacity: 0.3; }
+
+    /* ── Gallery ── */
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    /* ── Footer ── */
+    .footer-container { gap: 24px; }
+
+    /* ── Performance: Disable heavy FX ── */
     .cursor-glow { display: none !important; }
+    body { cursor: auto; }
+    .btn-primary, .btn-secondary, .btn-tertiary,
+    .contact-card, .team-card, .event-card,
+    .gallery-item, a { cursor: auto; }
+
+    /* Reduce blur and shadow intensity */
+    .navbar { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .about-card { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .registration-card { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+    /* Disable heavy glow blobs */
+    html::after, body::after {
+        width: 300px;
+        height: 300px;
+        filter: blur(60px);
+        opacity: 0.6;
+    }
+
+    /* Disable buttonPulse animation on mobile */
+    .btn-primary { animation: none; }
+
+    /* Simplify gradient shifts */
+    .gradient-text { animation: fadeInUp 0.8s ease-out 0.2s both; }
 }
 
-/* Mobile (<= 480px) */
+/* ─── Mobile (≤ 480px) ─────────────────────────────────────── */
 @media screen and (max-width: 480px) {
-    .hero-title { font-size: clamp(2rem, 10vw, 2.5rem); letter-spacing: -0.5px; }
-    .hero-subtitle { font-size: 1rem; line-height: 1.5; margin-bottom: 30px; }
-    
-    /* Simplifying Gears safely */
-    .hero-gears-container { max-width: 260px; margin-top: 20px; }
-    /* Hide delayed gears and sparks for performance/space */
-    .gear-wrapper.delay-2, .gear-wrapper.delay-3, .gear-wrapper.delay-4 { display: none !important; }
-    
-    /* Cards max-width to fix overflow */
+    section { padding: 48px 0; }
+
+    .hero {
+        padding: 100px 0 48px;
+    }
+    .hero-title {
+        font-size: clamp(1.75rem, 9vw, 2.2rem);
+        letter-spacing: -0.5px;
+    }
+    .hero-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 24px;
+        max-width: 100%;
+    }
+    .badge {
+        font-size: 0.72rem;
+        padding: 4px 12px;
+        margin-bottom: 16px;
+    }
+    .hero-cta {
+        flex-direction: column;
+        width: 100%;
+        align-items: stretch;
+    }
+    .hero-cta .btn-primary,
+    .hero-cta .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* ── Team: still 3 per row but even tighter ── */
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    .team-card {
+        padding: 14px 6px;
+        border-radius: 10px;
+    }
+    .team-avatar, .team-avatar-img, .team-avatar-placeholder {
+        width: 36px;
+        height: 36px;
+    }
+    .team-avatar-placeholder { font-size: 0.8rem; }
+    .team-name { font-size: 0.72rem; }
+    .team-role { font-size: 0.6rem; }
+    .team-social { display: none; }
+
+    /* ── Contact: hide description on very small screens ── */
+    .contact-card p { display: none; }
+    .contact-card {
+        padding: 16px 8px;
+    }
+    .contact-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .contact-card h3 { font-size: 0.78rem; }
+
+    /* ── About/Philosophy cards ── */
     .about-card, .philosophy-card { width: 280px; padding: 30px 24px; }
     .philo-scene { transform: scale(0.65); height: 320px; }
-    
-    /* Stacking */
-    .gallery-grid { grid-template-columns: 1fr; gap: 12px; }
-    .footer-container { gap: 20px; }
-    .team-grid { grid-template-columns: 1fr; }
+
+    /* ── Gallery: single column ── */
+    .gallery-grid { grid-template-columns: 1fr; gap: 10px; }
+
+    /* ── Footer ── */
+    .footer-container { gap: 16px; }
+    .footer-brand p { font-size: 0.85rem; }
+    .footer-bottom { font-size: 0.8rem; }
+
+    /* ── Nav compact ── */
+    .nav-container { padding: 14px 16px; }
+    .logo { font-size: 1.4rem; }
+    .logo-img { height: 30px; }
+
+    /* ── Disable remaining heavy FX ── */
+    html::after, body::after { display: none; }
+    html::before { opacity: 0.02; }
+    .hero-grid-overlay { display: none; }
 }
 
